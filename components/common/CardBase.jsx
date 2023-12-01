@@ -1,6 +1,7 @@
 import { formatMoney } from "@/utils/common.util";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Button, Card } from "antd";
+import { Card } from "antd";
 import React from "react";
 
 function CardBase({ hoverAction, width, height }) {
