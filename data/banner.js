@@ -1,17 +1,17 @@
 export const banner = [
   {
+    key: 3,
+    thumnail: "https://scontent.fhan17-1.fna.fbcdn.net/v/t1.15752-9/398301571_367652502588586_7034219861438108151_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=8cd0a2&_nc_ohc=f9TlxrU69eIAX9hXlr4&_nc_ht=scontent.fhan17-1.fna&oh=03_AdTKBG3wEjKrVWrr9r1505nV484JM54-KjzfuesqQdcOEw&oe=65916C2F",
+    link: "/",
+  },
+  {
     key: 1,
-    thumnail: "https://dongahome.vn/wp-content/uploads/2020/06/Banner-xa-hang-thanh-ly.jpg",
+    thumnail: "https://scontent.fhan17-1.fna.fbcdn.net/v/t1.15752-9/405112569_1443217126262772_8881537250289290913_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=8cd0a2&_nc_ohc=7BAD3enSDCEAX_DJ4Rg&_nc_ht=scontent.fhan17-1.fna&oh=03_AdQxa_wapolTEP_xsCk3aprNFWL2gq4oK-VJs_VTaKsI7w&oe=65917C26",
     link: "/",
   },
   {
     key: 2,
-    thumnail: "https://zkids.vn/images/thumbnails/894/406/blog/2/bannerthanhly-web.jpg",
-    link: "/",
-  },
-  {
-    key: 3,
-    thumnail: "https://topstore.vn/uploads/thanhlyxakho-banner-900-x600_1621848922.png",
+    thumnail: "https://scontent.fhan17-1.fna.fbcdn.net/v/t1.15752-9/398331320_770229621531261_6949161405101084692_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=8cd0a2&_nc_ohc=ASF-TUeHAQ8AX8XbjJS&_nc_ht=scontent.fhan17-1.fna&oh=03_AdSWKb7rDp_0atnDAiZ6xHvf-wlYB1P1sAOLcZAUauXc5w&oe=65916AE1",
     link: "/",
   },
 ];

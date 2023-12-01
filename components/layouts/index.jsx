@@ -7,7 +7,7 @@ function Layout({ children }) {
     <div>
       <Header />
       <div className="mt-[85px]">{children}</div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

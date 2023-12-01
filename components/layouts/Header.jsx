@@ -1,6 +1,7 @@
 import { CreateContext } from "@/context/ContextProviderGlobal";
 import { listHeader } from "@/data/header";
 import {
+  BellOutlined,
   SearchOutlined,
   ShoppingCartOutlined,
   UserOutlined,
@@ -76,6 +77,10 @@ function Header() {
           </Form.Item>
         </Form>
         <div className="flex items-center space-x-8">
+        
+          <Badge count={2}>
+            <BellOutlined className="text-[22px]" />
+          </Badge>
           <Badge count={5}>
             <ShoppingCartOutlined className="text-[25px]" />
           </Badge>
@@ -89,8 +94,8 @@ function Header() {
               }
               color="white"
             >
-              <Avatar>Q</Avatar>
-              <span>Quoc</span>
+              <Avatar>A</Avatar>
+              <span>Admin</span>
             </Tooltip>
           </div>
         </div>
