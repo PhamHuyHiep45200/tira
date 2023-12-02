@@ -1,21 +1,21 @@
 import request from ".";
 
 export async function loginUser(data) {
-  return request(`/user/login`, {
+  return request(`/auth/login`, {
     method: "POST",
     data,
   });
 }
 
 export async function createUser(data) {
-  return request(`/user`, {
+  return request(`/auth/register`, {
     method: "POST",
     data
   });
 }
 
-export async function userGetMe(id) {
-  return request(`/user/${id}`, {
+export async function userGetMe() {
+  return request(`/me`, {
     method: "GET",
   });
 }

@@ -1,33 +1,33 @@
 import LayoutLogin from "@/components/layouts/LayoutLogin";
 import { CreateContext } from "@/context/ContextProviderGlobal";
 import { loginUser } from "@/service/user";
-import { GooglePlusOutlined, InstagramOutlined, TwitterOutlined } from "@ant-design/icons";
+import {
+  GooglePlusOutlined,
+  InstagramOutlined,
+  TwitterOutlined,
+} from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 function Login() {
-  const { errorNoti } = useContext(CreateContext);
+  const { errorNoti, userAuth } = useContext(CreateContext);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const redirectRegister = (path) => {
     router.push("/register");
   };
   const submit = async (e) => {
-    router.push("/");
-    // try {
-    //   const response = await loginUser(e);
-    //   if (response.data && response.data.status === 200) {
-    //     if (localStorage.getItem("userId")) {
-    //       localStorage.removeItem("userId");
-    //     }
-    //     await localStorage.setItem("userId", response.data.data.id);
-    //     router.push("/");
-    //   } else {
-    //     errorNoti(response.data.message);
-    //   }
-    // } catch (error) {
-    //   errorNoti(error);
-    // }
+    setLoading(true);
+    try {
+      const { data } = await loginUser(e);
+      localStorage.setItem("token", data.token);
+      userAuth(true)
+    } catch (error) {
+      errorNoti("Vui lòng kiểm tra lại thông tin!");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div>
@@ -52,6 +52,7 @@ function Login() {
           className="w-full !bg-primary !my-2 !font-medium !text-[white] !rounded-[20px]"
           size="large"
           htmlType="submit"
+          loading={loading}
         >
           Đăng Nhập
         </Button>

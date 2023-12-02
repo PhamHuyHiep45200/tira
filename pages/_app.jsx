@@ -16,14 +16,15 @@ export default function MyApp({ Component, pageProps }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [auth, setAuth] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("userId")) {
+    if (auth || localStorage.getItem("token")) {
       getMe();
     } else {
       setUser(null);
     }
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleStartRouter);
@@ -40,20 +41,19 @@ export default function MyApp({ Component, pageProps }) {
     setLoading(true);
   };
 
+  const userAuth = (value) => {
+    setAuth(value);
+  };
+
   const handleComplete = () => {
     setLoading(false);
   };
   const getMe = async () => {
     try {
-      const response = await userGetMe(localStorage.getItem("userId"));
-      if (response.data && response.data.status === 200) {
-        setUser(response.data.data);
-        router.push("/");
-      } else {
-        // router.push("/");
-      }
+      const { user } = await userGetMe();
+      setUser(user);
     } catch (error) {
-      // router.push("/login");
+      console.log(error);
     }
   };
   const setUserData = (data) => {
@@ -72,17 +72,25 @@ export default function MyApp({ Component, pageProps }) {
       content: message,
     });
   };
+
+  const resetStore = () => {
+    localStorage.removeItem("token");
+    setAuth(false);
+    setUser(null);
+  };
   const data = useMemo(() => {
     return {
       user,
+      userAuth,
       setUserData,
       successNoti,
       errorNoti,
+      userAuth,
+      resetStore,
     };
-  }, [user]);
+  }, [user, auth]);
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout || ((page) => <Layout>{page}</Layout>);
-
   return (
     <CreateContext.Provider value={data}>
       <ConfigProvider
@@ -92,7 +100,7 @@ export default function MyApp({ Component, pageProps }) {
           },
         }}
       >
-        <Spin spinning={loading}  indicator={antIcon}>
+        <Spin spinning={loading} indicator={antIcon}>
           {contextHolder}
           {getLayout(<Component {...pageProps} />)}
         </Spin>

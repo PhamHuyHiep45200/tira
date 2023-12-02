@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "./Banner";
 import Category from "./Category";
 import { Button, Col, Image, Row } from "antd";
 import ProductNew from "./Product/ProductNew";
 import CardBase from "@/components/common/CardBase";
+import { getAllCategory } from "@/service/category";
+import { getAllProduct, getProductTopOrder } from "@/service/product";
 
 const listImage = [
   "https://pos.nvncdn.net/dca44c-69300/bn/20230518_NRuLyeyJ.png",
@@ -13,6 +15,64 @@ const listImage = [
 ];
 
 function HomePages() {
+  const [category, setCategory] = useState([]);
+  const [product, setProduct] = useState([]);
+  const [productTop, setProductTop] = useState([]);
+  const [loadingProduct, setLoadingProduct] = useState([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    total: 0,
+    limit: 4,
+  });
+
+  const getProductTop = async ()=>{
+    try {
+      const response = await getProductTopOrder()
+      setProductTop(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getAllDataCategory = async () => {
+    try {
+      const { categories } = await getAllCategory();
+      setCategory(categories.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getAllProductData = async () => {
+    setLoadingProduct(true);
+    try {
+      const { products } = await getAllProduct({
+        status: 1,
+        page: pagination.page,
+        limit: pagination.limit,
+      });
+      setProduct(products.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingProduct(false);
+    }
+  };
+  const getAllData = async () => {
+    try {
+      await Promise.all([getAllDataCategory(), getProductTop()]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllData();
+  }, []);
+
+  useEffect(() => {
+    getAllProductData();
+  }, [pagination.page]);
+
   return (
     <div>
       <Banner />
@@ -21,39 +81,43 @@ function HomePages() {
           <div className="text-[25px] underline mb-2 font-bold">
             Sản Phẩm Nổi Bật
           </div>
-          <ProductNew />
+          <ProductNew data={productTop} />
         </div>
-        <div className="mt-[150px]">
-          <Category />
-        </div>
+        {!!category.length && (
+          <div className="mt-[150px]">
+            <Category data={category} />
+          </div>
+        )}
         <div className="mt-[100px]">
           <div className="text-[25px] underline mb-2 font-bold">
             Sản Phẩm Khác
           </div>
           <Row gutter={[20, 30]}>
-            {[1, 2, 3, 4].map((e) => {
+            {product.map((e) => {
               return (
                 <Col span={6} key={e}>
-                  <CardBase hoverAction height={"400px"} />
+                  <CardBase hoverAction height={"400px"} infoProduct={e} />
                 </Col>
               );
             })}
           </Row>
-          <div className="text-center mt-5">
-            <Button size="large">Xem Thêm</Button>
-          </div>
+          {pagination.total > 4 && <div className="text-center mt-5">
+            <Button
+              size="large"
+              onClick={() =>
+                setPagination({ ...pagination, page: pagination.page + 1 })
+              }
+            >
+              Xem Thêm
+            </Button>
+          </div>}
         </div>
         <div className="my-[100px]">
           <Row gutter={[30, 30]}>
             {listImage.map((e) => {
               return (
                 <Col span={12} key={e} className="cursor-pointer">
-                  <img
-                    alt=""
-                    src={e}
-                    preview={false}
-                    className="w-full h-full object-cover"
-                  />
+                  <img alt="" src={e} className="w-full h-full object-cover" />
                 </Col>
               );
             })}

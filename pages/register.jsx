@@ -3,26 +3,26 @@ import { CreateContext } from "@/context/ContextProviderGlobal";
 import { createUser } from "@/service/user";
 import { Button, Form, Input } from "antd";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 function Register() {
   const { errorNoti, successNoti } = useContext(CreateContext);
   const router = useRouter();
+  const [loading, setLoading] = useState(false)
   const redirectLogin = () => {
     router.push("/login");
   };
   const createAccount = async (e) => {
-    const { confirm, ...data } = e;
+    setLoading(true)
+    const { confirm, ...datas } = e;
     try {
-      const response = await createUser(data);
-      if (response.data && response.data.status === 200) {
-        successNoti("Tạo tài khoản thành công");
-        router.push("/login");
-      } else {
-        errorNoti(response.data.message);
-      }
+      await createUser(datas);
+      successNoti('Đăng ký thành công')
+      redirectLogin()
     } catch (error) {
-      errorNoti(error);
+      errorNoti('vui lòng kiểm tra lại thông tin!');
+    } finally {
+      setLoading(false)
     }
   };
   return (
@@ -45,12 +45,6 @@ function Register() {
           <Input size="large" placeholder="Email" />
         </Form.Item>
         <Form.Item
-          name="phone"
-          rules={[{ required: true, message: "Không được bỏ trống!" }]}
-        >
-          <Input size="large" placeholder="Số điện thoại" />
-        </Form.Item>
-        <Form.Item
           name="password"
           rules={[
             {
@@ -64,7 +58,7 @@ function Register() {
         </Form.Item>
 
         <Form.Item
-          name="confirm"
+          name="password_confirmation"
           dependencies={["password"]}
           hasFeedback
           rules={[
@@ -88,6 +82,7 @@ function Register() {
           className="w-full !bg-primary !text-[white] !my-3"
           size="large"
           htmlType="submit"
+          loading={loading}
         >
           Đăng kí
         </Button>
