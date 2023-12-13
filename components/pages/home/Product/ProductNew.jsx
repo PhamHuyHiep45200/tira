@@ -3,7 +3,7 @@ import { Image } from "antd";
 import React from "react";
 import Slider from "react-slick";
 
-function ProductNew() {
+function ProductNew({data}) {
   const settings = {
     dots: true,
     infinite: true,
@@ -16,14 +16,15 @@ function ProductNew() {
     autoplaySpeed: 3000,
     centerMode: true,
     swipeToSlide: true,
-    dots: false
+    dots: false,
+    pauseOnHover: false
   };
   return (
     <Slider {...settings}>
-      {[1, 2, 3, 4, 5].map((e, i) => {
+      {data.length && data.map((e, i) => {
         return (
           <div className="px-[30px]" key={e}>
-            <CardBase />
+            <CardBase infoProduct={e} />
           </div>
         );
       })}

@@ -16,44 +16,46 @@ export default function MyApp({ Component, pageProps }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [auth, setAuth] = useState(false);
+  const [totalCart, setTotalCart] = useState(0);
 
   useEffect(() => {
-    if (localStorage.getItem("userId")) {
+    if (auth || localStorage.getItem("token")) {
       getMe();
     } else {
       setUser(null);
     }
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
-    router.events.on("routeChangeStart", handleStartRouter);
-    router.events.on("routeChangeComplete", handleComplete);
-    router.events.on("routeChangeError", handleComplete);
+    router.events.on("routeChangeStart", startLoading);
+    router.events.on("routeChangeComplete", stopLoading);
+    router.events.on("routeChangeError", stopLoading);
 
     return () => {
-      router.events.off("routeChangeStart", handleStartRouter);
-      router.events.off("routeChangeComplete", handleComplete);
-      router.events.off("routeChangeError", handleComplete);
+      router.events.off("routeChangeStart", startLoading);
+      router.events.off("routeChangeComplete", stopLoading);
+      router.events.off("routeChangeError", stopLoading);
     };
   }, [router, router.events]);
-  const handleStartRouter = () => {
+  const startLoading = () => {
     setLoading(true);
   };
 
-  const handleComplete = () => {
+  const userAuth = (value) => {
+    setAuth(value);
+  };
+
+  const stopLoading = () => {
     setLoading(false);
   };
   const getMe = async () => {
     try {
-      const response = await userGetMe(localStorage.getItem("userId"));
-      if (response.data && response.data.status === 200) {
-        setUser(response.data.data);
-        router.push("/");
-      } else {
-        // router.push("/");
-      }
+      const { user, totalProductCart } = await userGetMe();
+      setTotalCart(totalProductCart)
+      setUser(user);
     } catch (error) {
-      // router.push("/login");
+      console.log(error);
     }
   };
   const setUserData = (data) => {
@@ -72,17 +74,29 @@ export default function MyApp({ Component, pageProps }) {
       content: message,
     });
   };
+
+  const resetStore = () => {
+    localStorage.removeItem("token");
+    setAuth(false);
+    setUser(null);
+  };
   const data = useMemo(() => {
     return {
       user,
+      totalCart,
+      userAuth,
       setUserData,
       successNoti,
       errorNoti,
+      userAuth,
+      resetStore,
+      getMe,
+      startLoading,
+      stopLoading
     };
-  }, [user]);
+  }, [user, auth, totalCart]);
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout || ((page) => <Layout>{page}</Layout>);
-
   return (
     <CreateContext.Provider value={data}>
       <ConfigProvider
@@ -92,7 +106,7 @@ export default function MyApp({ Component, pageProps }) {
           },
         }}
       >
-        <Spin spinning={loading}  indicator={antIcon}>
+        <Spin spinning={loading} indicator={antIcon}>
           {contextHolder}
           {getLayout(<Component {...pageProps} />)}
         </Spin>

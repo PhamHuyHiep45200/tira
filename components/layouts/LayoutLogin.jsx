@@ -1,22 +1,32 @@
+import { CreateContext } from "@/context/ContextProviderGlobal";
 import {
   GooglePlusOutlined,
   InstagramOutlined,
   TwitterOutlined,
 } from "@ant-design/icons";
 import { Image } from "antd";
+import { useRouter } from "next/router";
+import { useContext, useEffect } from "react";
 
 /* eslint-disable @next/next/no-img-element */
 export default function LayoutLogin({
   children, // will be a page or nested layout
 }) {
+  const { user } = useContext(CreateContext);
+  const router = useRouter()
+  useEffect(()=>{
+    if(user) {
+      router.push('/')
+    }
+  }, [user])
   return (
     <div>
       <div
         className="fixed top-0 right-0 bottom-0 left-0 w-full h-full z-[10] flex items-center justify-center"
-        style={{
-          background:
-            "linear-gradient(146deg, rgba(255,117,109,1) 66%, rgba(255,224,0,1) 100%);",
-        }}
+        // style={{
+        //   background:
+        //     "linear-gradient(146deg, rgba(255,117,109,1) 66%, rgba(255,224,0,1) 100%);",
+        // }}
       >
         <div className="max-w-[450px] min-w-[320px] p-[30px] rounded-[4px] pb-[100px] bg-white">
           <div>

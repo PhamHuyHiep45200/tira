@@ -9,7 +9,7 @@ function Banner() {
     router.push(link);
   };
   return (
-    <Carousel draggable autoplay>
+    <Carousel pauseOnHover={false} draggable autoplay>
       {banner.map((e) => (
         <div key={e.key} onClick={()=>handleRedirectLink(e.link)} className="w-full h-[650px]">
           <Image alt="" src={e.thumnail} height={650} width='100%' preview={false}/>
