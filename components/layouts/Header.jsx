@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 
 function Header() {
-  const { user, resetStore } = useContext(CreateContext);
+  const { user, totalCart, resetStore } = useContext(CreateContext);
   const [name, setName] = useState("");
   const router = useRouter();
 
@@ -22,13 +22,15 @@ function Header() {
     router.push("/");
   };
 
-  const searchProduct = (values) => {
-    router.push({
-      pathname: "/search",
-      query: {
-        name,
-      },
-    });
+  const searchProduct = () => {
+    if (name) {
+      router.push({
+        pathname: "/search",
+        query: {
+          name,
+        },
+      });
+    }
   };
 
   return (
@@ -82,7 +84,7 @@ function Header() {
           <Badge count={2}>
             <BellOutlined className="text-[22px]" />
           </Badge>
-          <Badge count={5} onClick={() => redirectRouter("/cart")}>
+          <Badge count={totalCart ?? 0} onClick={() => redirectRouter("/cart")}>
             <ShoppingCartOutlined className="text-[25px]" />
           </Badge>
           {user && (
@@ -90,14 +92,40 @@ function Header() {
               <Tooltip
                 className="space-x-1"
                 title={
-                  <div
-                    className="text-[#333] px-5 py-2 cursor-pointer"
-                    onClick={() => {
-                      redirectRouter("/login");
-                      resetStore();
-                    }}
-                  >
-                    logout
+                  <div>
+                    <div
+                      className="text-[#333] px-5 py-2 cursor-pointer"
+                      onClick={() => {
+                        redirectRouter("/info-me");
+                      }}
+                    >
+                      Thông Tin Của Tôi
+                    </div>
+                    <div
+                      className="text-[#333] px-5 py-2 cursor-pointer"
+                      onClick={() => {
+                        redirectRouter("/order-me");
+                      }}
+                    >
+                      Đơn Hàng Của Tôi
+                    </div>
+                    <div
+                      className="text-[#333] px-5 py-2 cursor-pointer"
+                      onClick={() => {
+                        redirectRouter("/order-me");
+                      }}
+                    >
+                      Đơn Hàng Đã Đăng Bán
+                    </div>
+                    <div
+                      className="text-[#333] px-5 py-2 cursor-pointer"
+                      onClick={() => {
+                        redirectRouter("/login");
+                        resetStore();
+                      }}
+                    >
+                      Đăng Xuất
+                    </div>
                   </div>
                 }
                 color="white"

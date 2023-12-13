@@ -8,6 +8,7 @@ import {
   Checkbox,
   Col,
   Collapse,
+  Form,
   Image,
   Rate,
   Row,
@@ -18,6 +19,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 function Search() {
   const router = useRouter();
+  const [form] = Form.useForm()
   const [category, setCategory] = useState([]);
   const [product, setProduct] = useState([]);
   const [pagination, setPagination] = useState({
@@ -25,49 +27,63 @@ function Search() {
     total: 0,
     limit: 4,
   });
-  const redirectDetail = () => {
-    router.push("/detail/896524952");
-  };
-
-  const onChangeCategory = (e)=>{
-    console.log(e);
-  }
+  const [priceSlider, setPriceSlider] = useState({
+    min: 0,
+    max: 100,
+  })
 
   const items = useMemo(() => {
+    console.log(priceSlider)
     return [
       {
         key: "1",
         label: <span className="font-semibold">Lọc Theo Giá</span>,
-        children: <Slider range defaultValue={[20, 50]} />,
+        children: (
+          <Form.Item noStyle name={["filter", "price"]}>
+            <Slider
+              range
+              min={priceSlider.min}
+              max={priceSlider.max}
+            />
+          </Form.Item>
+        ),
       },
       {
         key: "2",
         label: <span className="font-semibold">Lọc Theo Thể Loại</span>,
         children: (
-          <Checkbox.Group
-            options={category}
-            onChange={onChangeCategory}
-          />
+          <Form.Item name={["filter", "category"]}>
+            <Checkbox.Group options={category} className="flex flex-col space-y-2" />
+          </Form.Item>
         ),
       },
     ];
-  }, [category]);
+  }, [category, form]);
 
   const getAllProductData = async () => {
     // setLoadingProduct(true);
-    console.log(router.query);
     try {
-      const { products } = await getAllProduct({
+      const { products, max_price, min_price } = await getAllProduct({
         status: 1,
         page: pagination.page,
         limit: pagination.limit,
-        ...router.query
+        ...router.query,
       });
       setProduct(products.data);
+      setPriceSlider({
+        ...priceSlider,
+        min: min_price,
+        max: max_price,
+      });
+      form.setFieldsValue({
+        filter: {
+          price: [min_price, max_price]
+        }
+      })
       setPagination({
         ...pagination,
-        total: products.total
-      })
+        total: products.total,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -80,7 +96,7 @@ function Search() {
       setCategory(
         categories.data.map((e) => ({
           value: e.id,
-          label: e.name,
+          label: <span className="text-[16px] text-[#666]">{e.name}</span>,
         }))
       );
     } catch (error) {
@@ -88,9 +104,31 @@ function Search() {
     }
   };
 
-  useEffect(()=>{
-    getAllProductData()
-  },[router.query])
+  const filter = (value) => {
+    const queryData = {
+      category: value?.filter?.category,
+      price_min: value?.filter?.price?.[0],
+      price_max: value?.filter?.price?.[1],
+    };
+    Object.entries(queryData).map((item) => {
+      if (!item[1]) {
+        delete queryData[item[0]];
+      }
+    });
+    console.log(queryData);
+    router.push({
+      query: {
+        ...router.query,
+        ...queryData,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (router.query && Object.values(router.query).length) {
+      getAllProductData();
+    }
+  }, [router.query]);
 
   useEffect(() => {
     getAllDataCategory();
@@ -100,33 +138,37 @@ function Search() {
       <div className="mb-[100px] mt-[50px] w-[1280px] relative">
         <Row gutter={[0, 40]}>
           <Col span={6}>
-            <div className="w-[80%] bg-[#f5f5f5] pb-5">
-              <Collapse
-                items={items}
-                defaultActiveKey={["1"]}
-                bordered={false}
-                className="bg-[#f5f5f5]"
-              />
-              <div className="flex px-5 justify-center">
-                <Button
-                  type="primary"
-                  size="large"
-                  className="text-white hover:!text-white bg-primary w-full"
-                >
-                  Filter
-                </Button>
+            <Form onFinish={filter} form={form}>
+              <div className="w-[80%] bg-[#f5f5f5] pb-5">
+                <Collapse
+                  items={items}
+                  activeKey={['1', '2']}
+                  bordered={false}
+                  className="bg-[#f5f5f5]"
+                />
+                <div className="flex px-5 justify-center">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    size="large"
+                    className="text-white hover:!text-white bg-primary w-full"
+                  >
+                    Filter
+                  </Button>
+                </div>
               </div>
-            </div>
+            </Form>
           </Col>
           <Col span={18}>
             <Row gutter={[20, 30]}>
-              {product.length && product.map((e) => {
-                return (
-                  <Col span={8} key={e}>
-                    <CardBase hoverAction infoProduct={e} height={"400px"} />
-                  </Col>
-                );
-              })}
+              {product.length &&
+                product.map((e) => {
+                  return (
+                    <Col span={8} key={e}>
+                      <CardBase hoverAction infoProduct={e} height={"400px"} />
+                    </Col>
+                  );
+                })}
             </Row>
             <div className="text-center mt-5">
               <Button size="large">Xem Thêm</Button>

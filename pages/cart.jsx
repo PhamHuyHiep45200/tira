@@ -1,29 +1,20 @@
 import QuantityProduct from "@/components/pages/cart/QuantityProduct";
+import { CreateContext } from "@/context/ContextProviderGlobal";
+import { getCart, updateCartById } from "@/service/cart";
 import { formatMoney } from "@/utils/common.util";
 import { Button, Image, Skeleton, Table } from "antd";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Fragment } from "react";
 
-const data = [];
-for (let i = 0; i < 5; i++) {
-  data.push({
-    key: i,
-    name: `Quần Áo Công Sở`,
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrOYhlH3bZMJ_gtzF0jfgxAfee3jywUxBeGg&usqp=CAU",
-    quantity: 2,
-    price: 500000,
-    category: {
-      name: "Quần Áo",
-    },
-  });
-}
 function Cart() {
+  const { getMe } = useContext(CreateContext);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [carts, setCarts] = useState([]);
-  const router = useRouter()
+  const [cartsObj, setCartsObj] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const router = useRouter();
 
   const start = () => {
     setLoading(true);
@@ -35,8 +26,13 @@ function Cart() {
   };
 
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
+    const total = newSelectedRowKeys.reduce(
+      (acc, newRow) =>
+        acc + cartsObj[newRow].quantity * cartsObj[newRow].product.price,
+      0
+    );
+    setTotalPrice(total);
   };
 
   const rowSelection = {
@@ -50,13 +46,11 @@ function Cart() {
         render: (_, record) => (
           <div className="flex items-center space-x-4">
             <Image
-              src={record?.image}
+              src={JSON.parse(record?.product?.image ?? "")?.[0]}
               alt=""
               className="max-w-[150px] max-h-[150px] rounded-[6px]"
             />
-            <div className="max-w-[200px]">
-              {record?.name} fsdn fdsfklkds fdskljfdskfs fsdkl
-            </div>
+            <div className="max-w-[200px]">{record?.product?.name}</div>
             <div>
               <span className="block text-[12px] text-[#999] italic">
                 Thể Loại
@@ -68,39 +62,76 @@ function Cart() {
       },
       {
         title: "Đơn Giá",
-        render: (_, record) => <span>{formatMoney(record.price)} đ</span>,
+        render: (_, record) => (
+          <span>{formatMoney(record?.product?.price ?? 0)} đ</span>
+        ),
       },
       {
         title: "Số Lượng",
         align: "center",
-        render: (_, record) => <QuantityProduct value={record.quantity} />,
+        render: (_, record) => (
+          <QuantityProduct
+            value={record?.quantity}
+            onChange={(qty) => updateCart(qty, record.id)}
+          />
+        ),
       },
       {
         title: "Tổng Tiền",
         render: (_, record) => (
           <span className="text-[red] font-semibold">
-            {formatMoney(record.price * record.quantity)} đ
+            {formatMoney(record?.product?.price ?? 0 * record.quantity)} đ
           </span>
         ),
       },
     ];
-  }, []);
+  }, [totalPrice, carts]);
 
-  const paymentCart = ()=>{
-    router.push('/payment')
-  }
+  const paymentCart = () => {
+    
+    router.push({
+      pathname: "/payment",
+      query: {
+        product: selectedRowKeys
+      }
+    });
+  };
   const getAllCart = async () => {
     setLoading(true);
-    setTimeout(() => {
-      try {
-        setCarts(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    }, 1000);
+    try {
+      const { cart } = await getCart();
+      setCarts(
+        cart[0].cart_details.map((e) => ({
+          ...e,
+          key: e.id,
+        }))
+      );
+      // orderby cart object with key id
+      const obj = {};
+      cart[0].cart_details.map((e) => {
+        obj[e.id] = e;
+      });
+      setCartsObj(obj);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const updateCart = async (qty, id)=>{
+    try {
+      await updateCartById(id, {
+        quantity: qty
+      })
+    } catch (error) {
+      console.log(error);
+    } finally {
+      getAllCart()
+      getMe()
+    }
+  }
+
   useEffect(() => {
     getAllCart();
   }, []);
@@ -126,7 +157,7 @@ function Cart() {
             <Table
               rowSelection={rowSelection}
               columns={columns}
-              dataSource={data}
+              dataSource={carts}
               pagination={false}
             />
           </Fragment>
@@ -135,12 +166,13 @@ function Cart() {
           <span>
             Tổng Tiền:{" "}
             <span className="text-primary text-[20px] font-bold">
-              {formatMoney(10000000)}đ
+              {formatMoney(totalPrice)}đ
             </span>
           </span>
           <Button
             className="bg-primary text-white !px-[30px] mt-[10px] hover:!text-white"
             size="large"
+            disabled={!selectedRowKeys.length}
             onClick={paymentCart}
           >
             Mua Hàng

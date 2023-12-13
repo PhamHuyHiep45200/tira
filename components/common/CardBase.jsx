@@ -1,9 +1,28 @@
+import { CreateContext } from "@/context/ContextProviderGlobal";
+import { addCart } from "@/service/cart";
 import { formatMoney } from "@/utils/common.util";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Button, Card } from "antd";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useContext } from "react";
 
 function CardBase({ hoverAction, width, height, infoProduct }) {
+  const { getMe } = useContext(CreateContext);
+  const router = useRouter();
+  const addToCart = async () => {
+    try {
+      await addCart({
+        product: infoProduct.id,
+        quantity: 1,
+      });
+      getMe();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const detailProduct = () => {
+    router.push(`/detail/${infoProduct.id}`);
+  };
   return (
     <Card
       title={false}
@@ -19,25 +38,30 @@ function CardBase({ hoverAction, width, height, infoProduct }) {
       className={hoverAction ? "container-card" : ""}
       style={{ boxShadow: "0 0 5px 3px #eaeaea" }}
     >
-      <div className="w-full h-[70%] overflow-hidden">
+      <div className="w-full h-[260px] overflow-hidden">
         <img
-          src={infoProduct ? JSON.parse(infoProduct?.image)[0] : ''}
+          src={infoProduct ? JSON.parse(infoProduct?.image)[0] : ""}
           alt=""
           className={`w-full h-full ${hoverAction ? "image-card" : ""}`}
         />
       </div>
       <div className="px-5">
-        <div className="text-[20px] font-semibold leading-[1.3] truncate-2 mt-2">
-          {infoProduct?.name ?? ''}
+        <div className="text-[20px] font-semibold h-[50px] leading-[1.3] truncate-2 mt-2">
+          {infoProduct?.name ?? ""}
         </div>
-        <div className="flex justify-between items-end mt-[15px]">
+        <div className="flex justify-between items-end mt-[5px]">
           {/* <span className="text-[#999]">Số lượng: <span className="text-[#ff7b0f]">18</span></span> */}
           <span className="text-[red] text-[22px] font-bold">
             {formatMoney(infoProduct?.price ?? 0)} đ
           </span>
-          <Button className="flex items-center space-x-1">
-            Add to cart <ShoppingCartOutlined />
+          <Button className="flex items-center space-x-1" onClick={addToCart}>
+            + <ShoppingCartOutlined />
           </Button>
+        </div>
+        <div className="flex">
+          <span className="underline text-primary" onClick={detailProduct}>
+            Xem Chi Tiết
+          </span>
         </div>
       </div>
     </Card>

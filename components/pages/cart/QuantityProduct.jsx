@@ -1,16 +1,28 @@
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 function QuantityProduct({ value, onChange }) {
   const [quantity, setQuantity] = useState(value);
+  const ref = useRef(null);
   useEffect(() => {
     setQuantity(value);
   }, [value]);
   const handlePlus = () => {
     setQuantity(quantity + 1);
+    clearTimeout(ref.current);
+    ref.current = setTimeout(() => {
+      onChange?.(quantity + 1);
+    }, [400]);
   };
   const handleMinus = () => {
     if (quantity !== 1) setQuantity(quantity - 1);
+
+    if (quantity !== 1) {
+      clearTimeout(ref.current);
+      ref.current = setTimeout(() => {
+        onChange?.(quantity - 1);
+      }, [400]);
+    }
   };
   return (
     <div className="flex justify-center">
@@ -19,7 +31,11 @@ function QuantityProduct({ value, onChange }) {
           className="flex justify-center select-none cursor-pointer items-center h-[35px] w-[35px] border-r-[1px]"
           onClick={handleMinus}
         >
-          <MinusOutlined />
+          <MinusOutlined
+            style={{
+              opacity: quantity === 1 ? 0.3 : 1,
+            }}
+          />
         </div>
         <div className="px-5">{quantity}</div>
         <div

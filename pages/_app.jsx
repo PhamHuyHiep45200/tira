@@ -17,6 +17,7 @@ export default function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [auth, setAuth] = useState(false);
+  const [totalCart, setTotalCart] = useState(0);
 
   useEffect(() => {
     if (auth || localStorage.getItem("token")) {
@@ -27,17 +28,17 @@ export default function MyApp({ Component, pageProps }) {
   }, [auth]);
 
   useEffect(() => {
-    router.events.on("routeChangeStart", handleStartRouter);
-    router.events.on("routeChangeComplete", handleComplete);
-    router.events.on("routeChangeError", handleComplete);
+    router.events.on("routeChangeStart", startLoading);
+    router.events.on("routeChangeComplete", stopLoading);
+    router.events.on("routeChangeError", stopLoading);
 
     return () => {
-      router.events.off("routeChangeStart", handleStartRouter);
-      router.events.off("routeChangeComplete", handleComplete);
-      router.events.off("routeChangeError", handleComplete);
+      router.events.off("routeChangeStart", startLoading);
+      router.events.off("routeChangeComplete", stopLoading);
+      router.events.off("routeChangeError", stopLoading);
     };
   }, [router, router.events]);
-  const handleStartRouter = () => {
+  const startLoading = () => {
     setLoading(true);
   };
 
@@ -45,12 +46,13 @@ export default function MyApp({ Component, pageProps }) {
     setAuth(value);
   };
 
-  const handleComplete = () => {
+  const stopLoading = () => {
     setLoading(false);
   };
   const getMe = async () => {
     try {
-      const { user } = await userGetMe();
+      const { user, totalProductCart } = await userGetMe();
+      setTotalCart(totalProductCart)
       setUser(user);
     } catch (error) {
       console.log(error);
@@ -81,14 +83,18 @@ export default function MyApp({ Component, pageProps }) {
   const data = useMemo(() => {
     return {
       user,
+      totalCart,
       userAuth,
       setUserData,
       successNoti,
       errorNoti,
       userAuth,
       resetStore,
+      getMe,
+      startLoading,
+      stopLoading
     };
-  }, [user, auth]);
+  }, [user, auth, totalCart]);
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout || ((page) => <Layout>{page}</Layout>);
   return (

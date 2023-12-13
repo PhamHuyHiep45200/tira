@@ -14,6 +14,12 @@ export async function getAllProduct(params) {
   });
 }
 
+export async function getProductById(id) {
+  return request(`/product/${id}`, {
+    method: "GET",
+  });
+}
+
 export async function getProductTopOrder() {
   return request(`/product/get-top-order`, {
     method: "GET",
