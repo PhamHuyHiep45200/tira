@@ -35,13 +35,13 @@ function Header() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-[1000] bg-[white] flex justify-center py-[20px]"
+      className="fixed top-0 left-0 right-0 z-[1000] bg-[white] flex justify-center py-[20px] px-5 xl:px-0"
       style={{
         boxShadow: "0 0 10px 5px #999",
       }}
     >
       <div className="w-[1280px] flex justify-between items-center">
-        <div>
+        <div className="hidden md:block">
           <Image
             className="cursor-poniter"
             width={160}
@@ -57,7 +57,7 @@ function Header() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               size="large"
-              className="rounded-[20px] min-w-[400px] pl-[15px] pr-[20px]"
+              className="rounded-[20px] max-w-[300px] pl-[15px] pr-[20px]"
               placeholder="Tìm kiếm ..."
               suffix={
                 <SearchOutlined
@@ -68,8 +68,9 @@ function Header() {
             />
           </Form.Item>
         </Form>
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-3 md:space-x-6">
           <Tooltip
+            className="hidden md:block"
             title="Đăng Sản Phẩm"
             onClick={() => redirectRouter("/post")}
           >
@@ -81,7 +82,7 @@ function Header() {
               className="cursor-pointer"
             />
           </Tooltip>
-          <Badge count={2}>
+          <Badge count={2} className="hidden md:block">
             <BellOutlined className="text-[22px]" />
           </Badge>
           <Badge count={totalCart ?? 0} onClick={() => redirectRouter("/cart")}>
@@ -131,7 +132,7 @@ function Header() {
                 color="white"
               >
                 <Avatar>{user?.name?.[0]}</Avatar>
-                <span>{user.name}</span>
+                <span className="hidden sm:block">{user.name}</span>
               </Tooltip>
             </div>
           )}

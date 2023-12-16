@@ -25,7 +25,7 @@ function Info() {
     }
   };
   return (
-    <div className="w-full pl-[100px]">
+    <div className="w-full pl-0 md:pl-[100px]">
       <h3 className="text-[22px] text-white bg-[#333] text-center py-2">
         Thông Tin Sản Phẩm
       </h3>

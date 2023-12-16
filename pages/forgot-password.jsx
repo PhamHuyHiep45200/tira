@@ -27,14 +27,8 @@ function Register() {
   };
   return (
     <div>
-      <div className="my-5 font-[500] text-center text-[30px]">Đăng Ký Khoản</div>
+      <div className="my-5 font-[500] text-center text-[30px]">Quên Mật Khẩu</div>
       <Form onFinish={createAccount}>
-        <Form.Item
-          name="name"
-          rules={[{ required: true, message: "Không được bỏ trống!" }]}
-        >
-          <Input size="large" placeholder="Tên" />
-        </Form.Item>
         <Form.Item
           name="email"
           rules={[
@@ -44,47 +38,13 @@ function Register() {
         >
           <Input size="large" placeholder="Email" />
         </Form.Item>
-        <Form.Item
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: "Không được bỏ trống!",
-            },
-          ]}
-          hasFeedback
-        >
-          <Input.Password size="large" placeholder="Mật khẩu" />
-        </Form.Item>
-
-        <Form.Item
-          name="password_confirmation"
-          dependencies={["password"]}
-          hasFeedback
-          rules={[
-            {
-              required: true,
-              message: "Nhập lại mật khẩu!",
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue("password") === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(new Error("Mật khẩu không khớp!"));
-              },
-            }),
-          ]}
-        >
-          <Input.Password size="large" placeholder="Nhập lại mật khẩu" />
-        </Form.Item>
         <Button
           className="w-full !bg-primary !text-[white] !my-3"
           size="large"
           htmlType="submit"
           loading={loading}
         >
-          Đăng kí
+          Gửi Code đến địa chỉ Email trên
         </Button>
         <span
           className="block text-right underline cursor-pointer underline-offset-1 text-primary font-medium"

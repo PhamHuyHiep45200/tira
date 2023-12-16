@@ -6,6 +6,8 @@ import ProductNew from "./Product/ProductNew";
 import CardBase from "@/components/common/CardBase";
 import { getAllCategory } from "@/service/category";
 import { getAllProduct, getProductTopOrder } from "@/service/product";
+import useWindowSize from "@/hooks/useResize";
+import { REPONSIVE_SCREEN } from "@/enum/reponsive";
 
 const listImage = [
   "https://pos.nvncdn.net/dca44c-69300/bn/20230518_NRuLyeyJ.png",
@@ -15,6 +17,7 @@ const listImage = [
 ];
 
 function HomePages() {
+  const [width, height] = useWindowSize();
   const [category, setCategory] = useState([]);
   const [product, setProduct] = useState([]);
   const [productTop, setProductTop] = useState([]);
@@ -25,14 +28,14 @@ function HomePages() {
     limit: 4,
   });
 
-  const getProductTop = async ()=>{
+  const getProductTop = async () => {
     try {
-      const response = await getProductTopOrder()
+      const response = await getProductTopOrder();
       setProductTop(response);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const getAllDataCategory = async () => {
     try {
@@ -72,47 +75,26 @@ function HomePages() {
   useEffect(() => {
     getAllProductData();
   }, [pagination.page]);
-
   return (
     <div>
       <Banner />
-      <div className="w-[1280px] m-[auto] px-5 py-10">
+      <div className="w-full xl:w-[1280px] m-[auto] px-2 md:px-5 py-10">
         <div className="my-[30px]">
-          <div className="text-[25px] underline mb-2 font-bold">
+          <div className="text-[20px] xl:text-[25px] underline mb-2 font-bold">
             Sản Phẩm Nổi Bật
           </div>
           <ProductNew data={productTop} />
         </div>
-        {!!category.length && (
+        {/* {!!category.length && (
           <div className="mt-[150px]">
             <Category data={category} />
           </div>
-        )}
-        <div className="mt-[100px]">
-          <div className="text-[25px] underline mb-2 font-bold">
-            Sản Phẩm Khác
+        )} */}
+
+        <div className="my-[50px]">
+        <div className="text-[20px] xl:text-[25px] underline mb-2 font-bold">
+            Thể Loại Nổi Bật
           </div>
-          <Row gutter={[20, 30]}>
-            {product.map((e) => {
-              return (
-                <Col span={6} key={e}>
-                  <CardBase hoverAction height={"400px"} infoProduct={e} />
-                </Col>
-              );
-            })}
-          </Row>
-          {pagination.total > 4 && <div className="text-center mt-5">
-            <Button
-              size="large"
-              onClick={() =>
-                setPagination({ ...pagination, page: pagination.page + 1 })
-              }
-            >
-              Xem Thêm
-            </Button>
-          </div>}
-        </div>
-        <div className="my-[100px]">
           <Row gutter={[30, 30]}>
             {listImage.map((e) => {
               return (
@@ -122,6 +104,37 @@ function HomePages() {
               );
             })}
           </Row>
+        </div>
+        <div className="mt-[50px]">
+          <div className="text-[20px] xl:text-[25px] underline mb-2 font-bold">
+            Sản Phẩm Khác
+          </div>
+          <Row
+            gutter={[
+              width < REPONSIVE_SCREEN.MD ? 10 : 20,
+              width < REPONSIVE_SCREEN.MD ? 5 : 30,
+            ]}
+          >
+            {product.map((e) => {
+              return (
+                <Col span={12} sm={12} md={8} lg={6} xl={6} key={e}>
+                  <CardBase hoverAction infoProduct={e} />
+                </Col>
+              );
+            })}
+          </Row>
+          {pagination.total > 4 && (
+            <div className="text-center mt-5">
+              <Button
+                size="large"
+                onClick={() =>
+                  setPagination({ ...pagination, page: pagination.page + 1 })
+                }
+              >
+                Xem Thêm
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

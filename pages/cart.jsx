@@ -1,5 +1,7 @@
 import QuantityProduct from "@/components/pages/cart/QuantityProduct";
 import { CreateContext } from "@/context/ContextProviderGlobal";
+import { REPONSIVE_SCREEN } from "@/enum/reponsive";
+import useWindowSize from "@/hooks/useResize";
 import { getCart, updateCartById } from "@/service/cart";
 import { formatMoney } from "@/utils/common.util";
 import { Button, Image, Skeleton, Table } from "antd";
@@ -8,6 +10,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Fragment } from "react";
 
 function Cart() {
+  const [widthScreen, height] = useWindowSize();
   const { getMe } = useContext(CreateContext);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,33 +43,42 @@ function Cart() {
     onChange: onSelectChange,
   };
   const columns = useMemo(() => {
-    return [
+    const list = [
       {
         title: "Sản Phẩm",
+        width: 300,
         render: (_, record) => (
-          <div className="flex items-center space-x-4">
-            <Image
-              src={JSON.parse(record?.product?.image ?? "")?.[0]}
-              alt=""
-              className="max-w-[150px] max-h-[150px] rounded-[6px]"
-            />
-            <div className="max-w-[200px]">{record?.product?.name}</div>
+          <div className="flex items-center space-x-2 md:space-x-4">
             <div>
-              <span className="block text-[12px] text-[#999] italic">
-                Thể Loại
-              </span>
-              <span>{record?.category?.name}</span>
+              <Image
+                src={JSON.parse(record?.product?.image ?? "")?.[0]}
+                alt=""
+                className="min-w-[60px] min-h-[40px] max-w-[60px] max-h-[40px] md:max-w-[150px] md:max-h-[150px] rounded-[6px]"
+              />
             </div>
+            <div className="max-w-[200px] truncate-2">
+              {record?.product?.name}
+            </div>
+            {widthScreen > REPONSIVE_SCREEN.SM && (
+              <div>
+                <span className="block text-[12px] text-[#999] italic">
+                  Thể Loại
+                </span>
+                <span>{record?.category?.name}</span>
+              </div>
+            )}
           </div>
         ),
       },
       {
+        width: 100,
         title: "Đơn Giá",
         render: (_, record) => (
           <span>{formatMoney(record?.product?.price ?? 0)} đ</span>
         ),
       },
       {
+        width: 100,
         title: "Số Lượng",
         align: "center",
         render: (_, record) => (
@@ -77,23 +89,25 @@ function Cart() {
         ),
       },
       {
+        width: 100,
         title: "Tổng Tiền",
         render: (_, record) => (
-          <span className="text-[red] font-semibold">
+          <span className="text-[red] text-[12px] md:text-[14px] whitespace-nowrap font-semibold">
             {formatMoney(record?.product?.price ?? 0 * record.quantity)} đ
           </span>
         ),
       },
     ];
+    if (widthScreen < REPONSIVE_SCREEN.MD) list.splice(1, 1);
+    return list;
   }, [totalPrice, carts]);
 
   const paymentCart = () => {
-    
     router.push({
       pathname: "/payment",
       query: {
-        product: selectedRowKeys
-      }
+        product: selectedRowKeys,
+      },
     });
   };
   const getAllCart = async () => {
@@ -119,25 +133,25 @@ function Cart() {
     }
   };
 
-  const updateCart = async (qty, id)=>{
+  const updateCart = async (qty, id) => {
     try {
       await updateCartById(id, {
-        quantity: qty
-      })
+        quantity: qty,
+      });
     } catch (error) {
       console.log(error);
     } finally {
-      getAllCart()
-      getMe()
+      getAllCart();
+      getMe();
     }
-  }
+  };
 
   useEffect(() => {
     getAllCart();
   }, []);
   return (
     <div className="flex justify-center">
-      <div className="mb-[100px] mt-[50px] w-[1280px] relative">
+      <div className="mb-[100px] mt-[50px] w-[1280px] relative px-2 sm:px-0">
         <div className="flex items-center justify-center mb-5">
           <div className="flex items-center">
             <span className="text-[40px] font-semibold">Giỏ Hàng</span>
@@ -159,6 +173,7 @@ function Cart() {
               columns={columns}
               dataSource={carts}
               pagination={false}
+              scroll={{ x: 400 }}
             />
           </Fragment>
         )}

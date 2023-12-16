@@ -31,7 +31,7 @@ function Login() {
   };
   return (
     <div>
-      <div className="my-5 font-[500] text-center text-[30px]">Login</div>
+      <div className="my-5 font-[500] text-center text-[30px]">Đăng Nhập</div>
       <Form onFinish={submit}>
         <Form.Item
           name="email"

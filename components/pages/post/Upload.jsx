@@ -4,7 +4,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Image } from "antd";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 
-function Upload({ value, onChange }) {
+function Upload({ value, onChange, styleBody }) {
   const { errorNoti } = useContext(CreateContext);
   const [img, setImg] = useState(value ?? "");
   const [loading, setLoading] = useState(false);
@@ -29,9 +29,9 @@ function Upload({ value, onChange }) {
     if (value) setImg(value);
   }, [value]);
   return (
-    <div className="w-[500px] flex justify-start relative">
+    <div className="w-full md:w-[500px] flex justify-start relative" style={styleBody}>
       <label htmlFor="img">
-        <div className=" border-solid border-[1px] rounded-[10px] flex flex-col items-center justify-center w-[400px] h-[400px] cursor-pointer">
+        <div className=" border-solid border-[1px] rounded-[10px] flex flex-col items-center justify-center w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] cursor-pointer">
           {!img ? (
             <div>
               {!loading ? (
@@ -39,6 +39,7 @@ function Upload({ value, onChange }) {
                   <Image
                     src="/image/no-image.png"
                     alt=""
+                    preview={false}
                     className="max-w-[100px] max-h-[100px]"
                   />
                   <div className="text-center">Chọn Ảnh</div>
@@ -51,9 +52,7 @@ function Upload({ value, onChange }) {
             <Image
               src={img}
               alt=""
-              width={'100%'}
-              height={'100%'}
-              className="w-full h-full rounded-[8px]"
+              className="w-[300px] h-[300px] sm:w-full sm:h-full rounded-[8px]"
               preview={false}
             />
           )}

@@ -8,42 +8,29 @@ import React, { useContext, useState } from "react";
 function Register() {
   const { errorNoti, successNoti } = useContext(CreateContext);
   const router = useRouter();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const redirectLogin = () => {
     router.push("/login");
   };
   const createAccount = async (e) => {
-    setLoading(true)
+    setLoading(true);
     const { confirm, ...datas } = e;
     try {
       await createUser(datas);
-      successNoti('Đăng ký thành công')
-      redirectLogin()
+      successNoti("Đăng ký thành công");
+      redirectLogin();
     } catch (error) {
-      errorNoti('vui lòng kiểm tra lại thông tin!');
+      errorNoti("vui lòng kiểm tra lại thông tin!");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
   return (
     <div>
-      <div className="my-5 font-[500] text-center text-[30px]">Đăng Ký Khoản</div>
+      <div className="my-5 font-[500] text-center text-[30px]">
+        Reset Mật Khẩu
+      </div>
       <Form onFinish={createAccount}>
-        <Form.Item
-          name="name"
-          rules={[{ required: true, message: "Không được bỏ trống!" }]}
-        >
-          <Input size="large" placeholder="Tên" />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          rules={[
-            { required: true, message: "Không được bỏ trống!" },
-            { type: "email", message: "Bắt buộc email" },
-          ]}
-        >
-          <Input size="large" placeholder="Email" />
-        </Form.Item>
         <Form.Item
           name="password"
           rules={[
@@ -84,7 +71,7 @@ function Register() {
           htmlType="submit"
           loading={loading}
         >
-          Đăng kí
+          Reset Mật Khẩu
         </Button>
         <span
           className="block text-right underline cursor-pointer underline-offset-1 text-primary font-medium"

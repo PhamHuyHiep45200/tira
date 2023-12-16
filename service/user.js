@@ -21,8 +21,8 @@ export async function userGetMe() {
 }
 
 export async function updateUser(id,data) {
-  return request(`/user/update-user/${id}`, {
-    method: "PUT",
+  return request(`/user/update/${id}`, {
+    method: "POST",
     data
   });
 }

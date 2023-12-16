@@ -1,4 +1,6 @@
 import CardBase from "@/components/common/CardBase";
+import { REPONSIVE_SCREEN } from "@/enum/reponsive";
+import useWindowSize from "@/hooks/useResize";
 import { getAllCategory } from "@/service/category";
 import { getAllProduct } from "@/service/product";
 import { FileSearchOutlined } from "@ant-design/icons";
@@ -18,8 +20,9 @@ import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 
 function Search() {
+  const [width, height] = useWindowSize();
   const router = useRouter();
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
   const [category, setCategory] = useState([]);
   const [product, setProduct] = useState([]);
   const [pagination, setPagination] = useState({
@@ -30,21 +33,17 @@ function Search() {
   const [priceSlider, setPriceSlider] = useState({
     min: 0,
     max: 100,
-  })
+  });
 
   const items = useMemo(() => {
-    console.log(priceSlider)
+    console.log(priceSlider);
     return [
       {
         key: "1",
         label: <span className="font-semibold">Lọc Theo Giá</span>,
         children: (
           <Form.Item noStyle name={["filter", "price"]}>
-            <Slider
-              range
-              min={priceSlider.min}
-              max={priceSlider.max}
-            />
+            <Slider range min={priceSlider.min} max={priceSlider.max} />
           </Form.Item>
         ),
       },
@@ -53,7 +52,10 @@ function Search() {
         label: <span className="font-semibold">Lọc Theo Thể Loại</span>,
         children: (
           <Form.Item name={["filter", "category"]}>
-            <Checkbox.Group options={category} className="flex flex-col space-y-2" />
+            <Checkbox.Group
+              options={category}
+              className="flex flex-col space-y-2"
+            />
           </Form.Item>
         ),
       },
@@ -77,9 +79,9 @@ function Search() {
       });
       form.setFieldsValue({
         filter: {
-          price: [min_price, max_price]
-        }
-      })
+          price: [min_price, max_price],
+        },
+      });
       setPagination({
         ...pagination,
         total: products.total,
@@ -137,12 +139,12 @@ function Search() {
     <div className="flex justify-center">
       <div className="mb-[100px] mt-[50px] w-[1280px] relative">
         <Row gutter={[0, 40]}>
-          <Col span={6}>
+          <Col span={0} lg={6}>
             <Form onFinish={filter} form={form}>
               <div className="w-[80%] bg-[#f5f5f5] pb-5">
                 <Collapse
                   items={items}
-                  activeKey={['1', '2']}
+                  activeKey={["1", "2"]}
                   bordered={false}
                   className="bg-[#f5f5f5]"
                 />
@@ -159,12 +161,18 @@ function Search() {
               </div>
             </Form>
           </Col>
-          <Col span={18}>
-            <Row gutter={[20, 30]}>
+          <Col span={24} lg={18}>
+            <Row
+              gutter={[
+                width < REPONSIVE_SCREEN.MD ? 10 : 20,
+                width < REPONSIVE_SCREEN.MD ? 5 : 30,
+              ]}
+              className="px-2 lg:px-0"
+            >
               {product.length &&
                 product.map((e) => {
                   return (
-                    <Col span={8} key={e}>
+                    <Col span={width < REPONSIVE_SCREEN.MD ? 12 : 8} key={e}>
                       <CardBase hoverAction infoProduct={e} height={"400px"} />
                     </Col>
                   );

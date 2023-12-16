@@ -19,12 +19,11 @@ function CardOrder({ data, id, status, totalPrice, refresh }) {
           {
             <div className="flex items-center space-x-4">
               <Image
-                width={100}
-                height={80}
+                className="max-w-[60px] min-h-[40px] sm:min-h-[80px] sm:min-w-[100px] min-w-[60px] max-h-[40px] sm:max-h-[80px] sm:max-w-[100px]"
                 src={JSON.parse(record.product.image)[0]}
                 alt=""
               />
-              <span className="font-semibold">{record.product.name}</span>
+              <span className="font-semibold truncate-2">{record.product.name}</span>
             </div>
           }
         </div>
