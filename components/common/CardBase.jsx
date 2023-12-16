@@ -30,8 +30,8 @@ function CardBase({ hoverAction, width, height, infoProduct }) {
   const heightCard = useMemo(()=>{
     if(widthScreen < REPONSIVE_SCREEN.MD) return '250px'
     if(height) return height
-    return '400px'
-  }, widthScreen, height)
+    return '350px'
+  }, [widthScreen, height])
   return (
     <Card
       title={false}
