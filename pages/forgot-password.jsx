@@ -1,6 +1,6 @@
 import LayoutLogin from "@/components/layouts/LayoutLogin";
 import { CreateContext } from "@/context/ContextProviderGlobal";
-import { createUser } from "@/service/user";
+import { createUser, sendMailForgot } from "@/service/user";
 import { Button, Form, Input } from "antd";
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
@@ -9,16 +9,15 @@ function Register() {
   const { errorNoti, successNoti } = useContext(CreateContext);
   const router = useRouter();
   const [loading, setLoading] = useState(false)
-  const redirectLogin = () => {
-    router.push("/login");
+  const redirectRouter = (path) => {
+    router.push(path);
   };
-  const createAccount = async (e) => {
+  const sendMail = async (e) => {
     setLoading(true)
-    const { confirm, ...datas } = e;
     try {
-      await createUser(datas);
-      successNoti('Đăng ký thành công')
-      redirectLogin()
+      await sendMailForgot(e);
+      successNoti('Thông tin đã gửi về email của bạn.')
+      redirectRouter(`/reset-password?email=${e.email}`)
     } catch (error) {
       errorNoti('vui lòng kiểm tra lại thông tin!');
     } finally {
@@ -28,7 +27,7 @@ function Register() {
   return (
     <div>
       <div className="my-5 font-[500] text-center text-[30px]">Quên Mật Khẩu</div>
-      <Form onFinish={createAccount}>
+      <Form onFinish={sendMail}>
         <Form.Item
           name="email"
           rules={[
@@ -48,7 +47,7 @@ function Register() {
         </Button>
         <span
           className="block text-right underline cursor-pointer underline-offset-1 text-primary font-medium"
-          onClick={redirectLogin}
+          onClick={()=>redirectRouter('/login')}
         >
           Đăng nhập
         </span>

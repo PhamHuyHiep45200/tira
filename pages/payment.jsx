@@ -12,23 +12,29 @@ const {TextArea} = Input
 
 const exchangeRate = 0.000043;
 function Payment() {
-  const { getMe } = useContext(CreateContext);
+  const { getMe, errorNoti } = useContext(CreateContext);
   const [paymentType, setPaymentType] = useState(2);
   const [loading, setLoading] = useState(false);
-  const selectPaymentType = (e) => {
-    setPaymentType(e.target.value);
-  };
   const router = useRouter();
   const { product } = router.query;
   const [products, setProducts] = useState([]);
   const [required, setRequired] = useState(true);
+  const [infoPayment, setInfoPayment] = useState({})
 
   const onValuesChange = (e, a) => {
+    setInfoPayment({
+      ...infoPayment,
+      ...e
+    })
     if (Object.values(a).every((e) => e)) {
       setRequired(false);
     } else {
       setRequired(true);
     }
+  };
+
+  const selectPaymentType = (e) => {
+    setPaymentType(e.target.value);
   };
 
   const getAllCart = async () => {
@@ -108,10 +114,23 @@ function Payment() {
     }
   };
 
+  const paymentOrder = async ()=>{
+    try {
+      const {order} = await createPayment({
+        cart_detail: product,
+        address: infoPayment.address,
+        phone: infoPayment.phone,
+        kind_of_payment: paymentType,
+      });
+      await getMe()
+    } catch (error) {
+      Object.values(error.message).forEach((e)=>errorNoti(e?.[0]))
+    }
+  } 
+
   useEffect(() => {
     if (product) getAllCart();
   }, [router]);
-  console.log((exchangeRate * totalPrice).toFixed(2));
   return (
     <div className="flex justify-center">
       <div className="mb-[200px] mt-[50px] px-2 md:px-0 min-w-[350px] md:min-w-[600px] max-w-[600px]  flex flex-col items-center">
@@ -172,11 +191,12 @@ function Payment() {
             </Radio>
           </Radio.Group>
           </div>
-          <div className="w-full md:min-w-[500px] md:max-w-[500px] mt-5 flex justify-center" >
+          <div className="w-full md:min-w-[500px] md:max-w-[500px] mt-5 flex justify-center md:block" >
             {paymentType === 1 ? (
               <Button
                 size="large"
                 className="bg-primary hover:!text-white text-white w-full !h-[55px]"
+                onClick={paymentOrder}
               >
                 Đặt Hàng
               </Button>
@@ -191,8 +211,8 @@ function Payment() {
                     try {
                       const { order } = await createPayment({
                         cart_detail: product,
-                        address: "gfdgfd",
-                        phone: "0948320948",
+                        address: infoPayment.address,
+                        phone: infoPayment.phone,
                         kind_of_payment: paymentType,
                       });
                       await getMe();

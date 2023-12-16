@@ -1,6 +1,6 @@
 import LayoutLogin from "@/components/layouts/LayoutLogin";
 import { CreateContext } from "@/context/ContextProviderGlobal";
-import { createUser } from "@/service/user";
+import { createUser, resetPassWord } from "@/service/user";
 import { Button, Form, Input } from "antd";
 import { useRouter } from "next/router";
 import React, { useContext, useState } from "react";
@@ -12,12 +12,16 @@ function Register() {
   const redirectLogin = () => {
     router.push("/login");
   };
-  const createAccount = async (e) => {
+  const resetPass = async (e) => {
     setLoading(true);
-    const { confirm, ...datas } = e;
+    const { password, token } = e;
     try {
-      await createUser(datas);
-      successNoti("Đăng ký thành công");
+      await resetPassWord({
+        email: router.query.email,
+        password,
+        token
+      });
+      successNoti("Reset password thành công");
       redirectLogin();
     } catch (error) {
       errorNoti("vui lòng kiểm tra lại thông tin!");
@@ -30,7 +34,7 @@ function Register() {
       <div className="my-5 font-[500] text-center text-[30px]">
         Reset Mật Khẩu
       </div>
-      <Form onFinish={createAccount}>
+      <Form onFinish={resetPass}>
         <Form.Item
           name="password"
           rules={[
@@ -64,6 +68,17 @@ function Register() {
           ]}
         >
           <Input.Password size="large" placeholder="Nhập lại mật khẩu" />
+        </Form.Item>
+        <Form.Item
+          name="token"
+          rules={[
+            {
+              required: true,
+              message: "Không được bỏ trống!",
+            },
+          ]}
+        >
+          <Input size="large" placeholder="Mã nhận từ Email" />
         </Form.Item>
         <Button
           className="w-full !bg-primary !text-[white] !my-3"

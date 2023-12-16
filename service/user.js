@@ -20,6 +20,13 @@ export async function userGetMe() {
   });
 }
 
+export async function updateMe(data) {
+  return request(`/update-me`, {
+    method: "POST",
+    data
+  });
+}
+
 export async function updateUser(id,data) {
   return request(`/user/update/${id}`, {
     method: "POST",
@@ -30,6 +37,20 @@ export async function updateUser(id,data) {
 export async function changePasswordUser(id,data) {
   return request(`/user/change-password/${id}`, {
     method: "PUT",
+    data
+  });
+}
+
+export async function sendMailForgot(data) {
+  return request(`/auth/send-mail`, {
+    method: "POST",
+    data
+  });
+}
+
+export async function resetPassWord(data) {
+  return request(`/auth/reset-password`, {
+    method: "POST",
     data
   });
 }

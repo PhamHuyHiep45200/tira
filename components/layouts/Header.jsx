@@ -67,7 +67,7 @@ function Header() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               size="large"
-              className="rounded-[20px] max-w-[300px] pl-[15px] pr-[20px]"
+              className="rounded-[20px] max-w-[300px] min-w-[300px] sm:max-w-[500px] sm:min-w-[450px] pl-[15px] pr-[20px]"
               placeholder="Tìm kiếm ..."
               suffix={
                 <SearchOutlined
@@ -141,7 +141,7 @@ function Header() {
                 }
                 color="white"
               >
-                <Avatar>{user?.name?.[0]}</Avatar>
+                <Avatar src={user?.image}>{user?.name?.[0]}</Avatar>
                 <span>{user.name}</span>
               </Tooltip>
             </div>
@@ -151,7 +151,7 @@ function Header() {
       <Drawer
         title={
           <div className="flex items-center justify-end space-x-2">
-            <Avatar>{user?.name?.[0]}</Avatar>
+            <Avatar src={user?.image}>{user?.name?.[0]}</Avatar>
             <span>{user?.name}</span>
           </div>
         }

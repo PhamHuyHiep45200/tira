@@ -1,6 +1,6 @@
 import Upload from "@/components/pages/post/Upload";
 import { CreateContext } from "@/context/ContextProviderGlobal";
-import { updateUser } from "@/service/user";
+import { updateMe, updateUser } from "@/service/user";
 import { EditOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -35,7 +35,11 @@ function InfoMe() {
 
   const updateUserSubmit = async (values) => {
     try {
-      await updateUser(user.id, values);
+      await updateMe({
+        ...user
+        ,...values,
+        role: 'client'
+      });
       await getMe();
       handleCancel();
     } catch (error) {

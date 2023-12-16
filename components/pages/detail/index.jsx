@@ -76,7 +76,7 @@ function DetailProduct() {
                   })}
               </Slider>
             </Col>
-            <Col span={24} col={14} className="flex flex-col justify-between h-auto xl:h-[400px]">
+            <Col span={24} lg={14} className="flex flex-col justify-between h-auto xl:h-[400px]">
               <div className="px-2 sm:px-0">
                 <div className="text-[20px] xl:text-[25px] font-semibold truncate-2">
                   {detail?.name}

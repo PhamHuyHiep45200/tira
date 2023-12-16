@@ -1,4 +1,9 @@
-import { STATUS_ORDERED, StatusOrder, StatusTextOrder } from "@/enum/order-status";
+import {
+  KIND_MANUAL,
+  STATUS_ORDERED,
+  StatusOrder,
+  StatusTextOrder,
+} from "@/enum/order-status";
 import { checkPayment } from "@/service/payment";
 import { formatMoney } from "@/utils/common.util";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
@@ -7,7 +12,7 @@ import React, { useMemo, useState } from "react";
 
 const exchangeRate = 0.000043;
 
-function CardOrder({ data, id, status, totalPrice, refresh }) {
+function CardOrder({ data, id, status, totalPrice, refresh, paymentType }) {
   const [open, setOpen] = useState(false);
   const columns = [
     {
@@ -23,7 +28,9 @@ function CardOrder({ data, id, status, totalPrice, refresh }) {
                 src={JSON.parse(record.product.image)[0]}
                 alt=""
               />
-              <span className="font-semibold truncate-2">{record.product.name}</span>
+              <span className="font-semibold truncate-2">
+                {record.product.name}
+              </span>
             </div>
           }
         </div>
@@ -50,7 +57,7 @@ function CardOrder({ data, id, status, totalPrice, refresh }) {
   const checkPaypalPayment = async (id) => {
     try {
       await checkPayment({ bill_id: id });
-      await refresh()
+      await refresh();
     } catch (error) {
       console.log(error);
     }
@@ -78,19 +85,31 @@ function CardOrder({ data, id, status, totalPrice, refresh }) {
             columns={columns}
           />
         </div>
-        <div className="bg-[#f5f5f5] py-5 px-8 flex justify-end items-center">
-          <span className="mr-2 font-semibold text-[#666]">Tổng Tiền:</span>
-          <div className="text-[17px] text-[red] font-semibold">
-            {formatMoney(totalPrice ?? 0)}đ
+        <div className="bg-[#f5f5f5] py-5 px-8 flex justify-between items-center">
+          <div>
+            Thanh Toán:{" "}
+            <span className="font-bold text-promary">
+              {paymentType === KIND_MANUAL
+                ? "Khi Nhận Hàng"
+                : "Thanh Toán OnLine"}
+            </span>
           </div>
-          {status === STATUS_ORDERED && <Button
-            className="ml-5 bg-primary hover:bg-primary"
-            type="primary"
-            size="large"
-            onClick={() => setOpen(true)}
-          >
-            Thanh Toán
-          </Button>}
+          <div>
+            <span className="mr-2 font-semibold text-[#666]">Tổng Tiền:</span>
+            <div className="text-[17px] text-[red] font-semibold">
+              {formatMoney(totalPrice ?? 0)}đ
+            </div>
+            {status === STATUS_ORDERED && paymentType !== KIND_MANUAL && (
+              <Button
+                className="ml-5 bg-primary hover:bg-primary"
+                type="primary"
+                size="large"
+                onClick={() => setOpen(true)}
+              >
+                Thanh Toán
+              </Button>
+            )}
+          </div>
         </div>
       </Card>
       <Modal
@@ -126,8 +145,8 @@ function CardOrder({ data, id, status, totalPrice, refresh }) {
             }}
             onApprove={async (data, actions) => {
               const order = await actions.order.capture();
-              await checkPaypalPayment(order.id)
-              setOpen(false)
+              await checkPaypalPayment(order.id);
+              setOpen(false);
             }}
             onError={(err) => {
               console.log(err);
