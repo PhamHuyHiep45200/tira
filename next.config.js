@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   async rewrites() {
+    console.log('ok',process.env.NEXT_PUBLIC_URL_SERVER)
     return [
       {
         source: "/api/:path*",

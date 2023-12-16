@@ -1,6 +1,6 @@
 import axios from "axios";
 const instance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_URL_SERVER,
+  baseURL: process.env.NEXT_PUBLIC_URL_LOCAL,
   headers: {
     "Content-Type": "application/json",
     // 'Content-Type': 'multipart/form-data',
