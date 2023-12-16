@@ -17,7 +17,7 @@ function OrderMe() {
   }, []);
   return (
     <div className="flex justify-center">
-      <div className="mb-[100px] mt-[50px] w-[1280px] relative">
+      <div className="mb-[100px] mt-[50px] w-[1280px] relative px-2 sm:px-0">
         {order.length &&
           order.map((e) => (
             <div className="mb-5" key={e.id}>

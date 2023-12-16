@@ -10,6 +10,7 @@ import {
   Checkbox,
   Col,
   Collapse,
+  Drawer,
   Form,
   Image,
   Rate,
@@ -18,6 +19,8 @@ import {
 } from "antd";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
+import Slide from "./Slide";
+import Category from "./Category";
 
 function Search() {
   const [width, height] = useWindowSize();
@@ -25,6 +28,7 @@ function Search() {
   const [form] = Form.useForm();
   const [category, setCategory] = useState([]);
   const [product, setProduct] = useState([]);
+  const [open, setOpen] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
     total: 0,
@@ -35,31 +39,29 @@ function Search() {
     max: 100,
   });
 
+  const onClose = () => {
+    setOpen(false);
+  };
+
+  const onOpen = () => {
+    setOpen(true);
+  };
+
   const items = useMemo(() => {
-    console.log(priceSlider);
-    return [
+    let itemsTable = [
       {
         key: "1",
         label: <span className="font-semibold">Lọc Theo Giá</span>,
-        children: (
-          <Form.Item noStyle name={["filter", "price"]}>
-            <Slider range min={priceSlider.min} max={priceSlider.max} />
-          </Form.Item>
-        ),
+        children: <Slide priceSlider={priceSlider} />,
       },
       {
         key: "2",
         label: <span className="font-semibold">Lọc Theo Thể Loại</span>,
-        children: (
-          <Form.Item name={["filter", "category"]}>
-            <Checkbox.Group
-              options={category}
-              className="flex flex-col space-y-2"
-            />
-          </Form.Item>
-        ),
+        children: <Category category={category} />,
       },
     ];
+    if (width < REPONSIVE_SCREEN.MD) itemsTable = [];
+    return itemsTable;
   }, [category, form]);
 
   const getAllProductData = async () => {
@@ -107,6 +109,7 @@ function Search() {
   };
 
   const filter = (value) => {
+    onClose()
     const queryData = {
       category: value?.filter?.category,
       price_min: value?.filter?.price?.[0],
@@ -117,7 +120,6 @@ function Search() {
         delete queryData[item[0]];
       }
     });
-    console.log(queryData);
     router.push({
       query: {
         ...router.query,
@@ -137,9 +139,22 @@ function Search() {
   }, []);
   return (
     <div className="flex justify-center">
-      <div className="mb-[100px] mt-[50px] w-[1280px] relative">
+      <div className="mb-[100px] mt-5 md:mt-[50px] w-[1280px] relative">
+        <div
+          className="md:hidden flex items-center space-x-1 px-2 mb-2 cursor-pointer"
+          onClick={onOpen}
+        >
+          <Image
+            preview={false}
+            src="/image/filter.png"
+            width={20}
+            height={20}
+            alt=""
+          />
+          <span className="text-[12px] font-semibold">Bộ lọc</span>
+        </div>
         <Row gutter={[0, 40]}>
-          <Col span={0} lg={6}>
+          <Col span={0} lg={6} className="hidden md:block">
             <Form onFinish={filter} form={form}>
               <div className="w-[80%] bg-[#f5f5f5] pb-5">
                 <Collapse
@@ -155,7 +170,7 @@ function Search() {
                     size="large"
                     className="text-white hover:!text-white bg-primary w-full"
                   >
-                    Filter
+                    Tìm kiếm
                   </Button>
                 </div>
               </div>
@@ -184,6 +199,35 @@ function Search() {
           </Col>
         </Row>
       </div>
+      {width < REPONSIVE_SCREEN.MD && (
+        <Drawer
+          title="Tìm kiếm bằng bộ lọc"
+          placement={"bottom"}
+          onClose={onClose}
+          open={open}
+        >
+          <Form onFinish={filter} form={form}>
+            <div>
+              <span>Theo Giá</span>
+              <Slide priceSlider={priceSlider} />
+            </div>
+            <div>
+              <span>Theo Thể Loại</span>
+              <Category category={category} />
+            </div>
+            <div className="flex px-5 justify-center">
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="large"
+                className="text-white hover:!text-white bg-primary w-full"
+              >
+                Tìm kiếm
+              </Button>
+            </div>
+          </Form>
+        </Drawer>
+      )}
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import { CreateContext } from "@/context/ContextProviderGlobal";
 import {
   BellOutlined,
+  MenuUnfoldOutlined,
   SearchOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
-import { Avatar, Badge, Form, Input, Tooltip } from "antd";
+import { Avatar, Badge, Divider, Drawer, Form, Input, Tooltip } from "antd";
 import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -12,14 +13,20 @@ import Image from "next/image";
 function Header() {
   const { user, totalCart, resetStore } = useContext(CreateContext);
   const [name, setName] = useState("");
+  const [open, setOpen] = useState(false);
   const router = useRouter();
+
+  const onOpen = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
 
   const redirectRouter = (path) => {
     router.push(path ?? "/");
-  };
-
-  const redirectHome = () => {
-    router.push("/");
+    onClose();
   };
 
   const searchProduct = () => {
@@ -48,8 +55,11 @@ function Header() {
             height={200}
             src="/image/logo.png"
             alt="logo"
-            onClick={redirectHome}
+            onClick={()=>redirectRouter('/')}
           />
+        </div>
+        <div className="items-center md:hidden">
+          <MenuUnfoldOutlined className="text-[25px]" onClick={onOpen} />
         </div>
         <Form>
           <Form.Item noStyle name="name">
@@ -89,7 +99,7 @@ function Header() {
             <ShoppingCartOutlined className="text-[25px]" />
           </Badge>
           {user && (
-            <div className="flex items-center cursor-pointer">
+            <div className="items-center cursor-pointer hidden md:flex">
               <Tooltip
                 className="space-x-1"
                 title={
@@ -132,12 +142,71 @@ function Header() {
                 color="white"
               >
                 <Avatar>{user?.name?.[0]}</Avatar>
-                <span className="hidden sm:block">{user.name}</span>
+                <span>{user.name}</span>
               </Tooltip>
             </div>
           )}
         </div>
       </div>
+      <Drawer
+        title={
+          <div className="flex items-center justify-end space-x-2">
+            <Avatar>{user?.name?.[0]}</Avatar>
+            <span>{user?.name}</span>
+          </div>
+        }
+        placement={"left"}
+        width={"80%"}
+        onClose={onClose}
+        open={open}
+      >
+        <div className="flex justify-center mb-5">
+          <Image
+            className="cursor-poniter"
+            width={160}
+            height={200}
+            src="/image/logo.png"
+            alt="logo"
+            onClick={()=>redirectRouter('/')}
+          />
+        </div>
+        <div
+          className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+          onClick={() => {
+            redirectRouter("/info-me");
+          }}
+        >
+          Thông Tin Của Tôi
+        </div>
+        <Divider className="!my-0" />
+        <div
+          className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+          onClick={() => {
+            redirectRouter("/order-me");
+          }}
+        >
+          Đơn Hàng Của Tôi
+        </div>
+        <Divider className="!my-0" />
+        <div
+          className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+          onClick={() => {
+            redirectRouter("/order-me");
+          }}
+        >
+          Đơn Hàng Đã Đăng Bán
+        </div>
+        <Divider className="!my-0" />
+        <div
+          className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+          onClick={() => {
+            redirectRouter("/login");
+            resetStore();
+          }}
+        >
+          Đăng Xuất
+        </div>
+      </Drawer>
     </div>
   );
 }
