@@ -68,7 +68,7 @@ function HeaderCategory({ open, closeMenu }) {
                     <Image
                       className="xl:hidden"
                       preview={false}
-                      src={getImage(e.image)}
+                      src={e.image}
                       width={30}
                       height={20}
                       alt=""
