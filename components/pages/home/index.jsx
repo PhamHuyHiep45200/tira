@@ -10,9 +10,9 @@ import useWindowSize from "@/hooks/useResize";
 import { REPONSIVE_SCREEN } from "@/enum/reponsive";
 
 const listImage = [
-  "https://pos.nvncdn.net/dca44c-69300/bn/20230518_NRuLyeyJ.png",
-  "https://pos.nvncdn.net/dca44c-69300/bn/20221208_l0EK09MD8OqaJG0u.png",
-  "https://pos.nvncdn.net/dca44c-69300/bn/20230518_iiOArOu7.png",
+  "https://scontent.xx.fbcdn.net/v/t1.15752-9/398324449_196004303567818_172238991446465391_n.png?stp=dst-png_p206x206&_nc_cat=102&ccb=1-7&_nc_sid=510075&_nc_ohc=ybPY66rNQ9wAX9d9nDj&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdSe3x9yIZ7tDPBGyVBentWKHX2Qerxsw_jTKpjASTB0IQ&oe=65917D14",
+  "https://scontent.xx.fbcdn.net/v/t1.15752-9/398324449_196004303567818_172238991446465391_n.png?stp=dst-png_p206x206&_nc_cat=102&ccb=1-7&_nc_sid=510075&_nc_ohc=ybPY66rNQ9wAX9d9nDj&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdSe3x9yIZ7tDPBGyVBentWKHX2Qerxsw_jTKpjASTB0IQ&oe=65917D14",
+  "https://scontent.xx.fbcdn.net/v/t1.15752-9/398324449_196004303567818_172238991446465391_n.png?stp=dst-png_p206x206&_nc_cat=102&ccb=1-7&_nc_sid=510075&_nc_ohc=ybPY66rNQ9wAX9d9nDj&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdSe3x9yIZ7tDPBGyVBentWKHX2Qerxsw_jTKpjASTB0IQ&oe=65917D14",
   "https://scontent.xx.fbcdn.net/v/t1.15752-9/398324449_196004303567818_172238991446465391_n.png?stp=dst-png_p206x206&_nc_cat=102&ccb=1-7&_nc_sid=510075&_nc_ohc=ybPY66rNQ9wAX9d9nDj&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdSe3x9yIZ7tDPBGyVBentWKHX2Qerxsw_jTKpjASTB0IQ&oe=65917D14",
 ];
 
