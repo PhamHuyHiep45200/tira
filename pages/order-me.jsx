@@ -15,7 +15,6 @@ function OrderMe() {
   useEffect(() => {
     getDataOrderMe();
   }, []);
-  console.log(order);
   return (
     <div className="flex justify-center">
       <div className="mb-[100px] mt-[50px] w-[1280px] relative px-2 sm:px-0">

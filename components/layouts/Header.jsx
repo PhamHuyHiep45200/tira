@@ -1,5 +1,6 @@
 import { CreateContext } from "@/context/ContextProviderGlobal";
 import {
+  AppstoreAddOutlined,
   BellOutlined,
   MenuUnfoldOutlined,
   SearchOutlined,
@@ -9,11 +10,13 @@ import { Avatar, Badge, Divider, Drawer, Form, Input, Tooltip } from "antd";
 import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import HeaderCategory from "./HeaderCategory";
 
 function Header() {
   const { user, totalCart, resetStore } = useContext(CreateContext);
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
   const router = useRouter();
 
   const onOpen = () => {
@@ -23,6 +26,10 @@ function Header() {
   const onClose = () => {
     setOpen(false);
   };
+
+  const closeCategory = ()=>{
+    setOpenCategory(false)
+  }
 
   const redirectRouter = (path) => {
     router.push(path ?? "/");
@@ -47,6 +54,7 @@ function Header() {
         boxShadow: "0 0 10px 5px #999",
       }}
     >
+      <HeaderCategory open={openCategory} closeMenu={closeCategory} />
       <div className="w-[1280px] flex justify-between items-center">
         <div className="hidden md:block">
           <Image
@@ -55,7 +63,7 @@ function Header() {
             height={200}
             src="/image/logo.png"
             alt="logo"
-            onClick={()=>redirectRouter('/')}
+            onClick={() => redirectRouter("/")}
           />
         </div>
         <div className="items-center md:hidden">
@@ -79,6 +87,12 @@ function Header() {
           </Form.Item>
         </Form>
         <div className="flex items-center space-x-3 md:space-x-6">
+          <Tooltip
+            title="Thể Loại"
+            onClick={() => setOpenCategory(!openCategory)}
+          >
+            <AppstoreAddOutlined className="text-[20px] sm:text-[30px]" />
+          </Tooltip>
           <Tooltip
             className="hidden md:block"
             title="Đăng Sản Phẩm"
@@ -167,7 +181,7 @@ function Header() {
             height={200}
             src="/image/logo.png"
             alt="logo"
-            onClick={()=>redirectRouter('/')}
+            onClick={() => redirectRouter("/")}
           />
         </div>
         <div
