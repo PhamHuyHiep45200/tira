@@ -121,7 +121,7 @@ function Header() {
           <Badge
             count={totalCart ?? 0}
             onClick={() =>
-              redirectRouter(redirectRouter(user ? "/cart" : "/login"))
+              redirectRouter(user ? "/cart" : "/login")
             }
           >
             <ShoppingCartOutlined className="text-[25px]" />
