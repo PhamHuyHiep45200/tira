@@ -33,7 +33,7 @@ function DetailProduct() {
     try {
       const { product } = await getProductById(id);
       setDetail(product);
-      setImages(JSON.parse(product.image));
+      setImages([product.image_master,...JSON.parse(product.image)]);
     } catch (error) {
       console.log(error);
     }

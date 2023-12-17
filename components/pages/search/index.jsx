@@ -32,7 +32,7 @@ function Search() {
   const [pagination, setPagination] = useState({
     page: 1,
     total: 0,
-    limit: 4,
+    limit: 2,
   });
   const [priceSlider, setPriceSlider] = useState({
     min: 0,
@@ -73,7 +73,7 @@ function Search() {
         limit: pagination.limit,
         ...router.query,
       });
-      setProduct(products.data);
+      setProduct([...product, ...products.data]);
       setPriceSlider({
         ...priceSlider,
         min: min_price,
@@ -109,7 +109,7 @@ function Search() {
   };
 
   const filter = (value) => {
-    onClose()
+    onClose();
     const queryData = {
       category: value?.filter?.category,
       price_min: value?.filter?.price?.[0],
@@ -132,7 +132,7 @@ function Search() {
     if (router.query && Object.values(router.query).length) {
       getAllProductData();
     }
-  }, [router.query]);
+  }, [router.query, pagination.page]);
 
   useEffect(() => {
     getAllDataCategory();
@@ -193,9 +193,18 @@ function Search() {
                   );
                 })}
             </Row>
-            <div className="text-center mt-5">
-              <Button size="large">Xem Thêm</Button>
-            </div>
+            {pagination.total > product.length && (
+              <div className="text-center mt-5">
+                <Button
+                  onClick={() =>
+                    setPagination({ ...pagination, page: pagination.page + 1 })
+                  }
+                  size="large"
+                >
+                  Xem Thêm
+                </Button>
+              </div>
+            )}
           </Col>
         </Row>
       </div>

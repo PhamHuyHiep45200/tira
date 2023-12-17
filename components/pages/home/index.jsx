@@ -53,7 +53,14 @@ function HomePages() {
         page: pagination.page,
         limit: pagination.limit,
       });
-      setProduct(products.data);
+      setPagination({
+        ...pagination,
+        total: products.total
+      })
+      setProduct([
+        ...product,
+        ...products.data
+      ]);
     } catch (error) {
       console.log(error);
     } finally {
@@ -123,7 +130,7 @@ function HomePages() {
               );
             })}
           </Row>
-          {pagination.total > 4 && (
+          {pagination.total > product.length && (
             <div className="text-center mt-5">
               <Button
                 size="large"

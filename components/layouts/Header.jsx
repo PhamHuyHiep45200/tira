@@ -6,7 +6,16 @@ import {
   SearchOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
-import { Avatar, Badge, Divider, Drawer, Form, Input, Tooltip } from "antd";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Divider,
+  Drawer,
+  Form,
+  Input,
+  Tooltip,
+} from "antd";
 import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -27,9 +36,9 @@ function Header() {
     setOpen(false);
   };
 
-  const closeCategory = ()=>{
-    setOpenCategory(false)
-  }
+  const closeCategory = () => {
+    setOpenCategory(false);
+  };
 
   const redirectRouter = (path) => {
     router.push(path ?? "/");
@@ -96,7 +105,7 @@ function Header() {
           <Tooltip
             className="hidden md:block"
             title="Đăng Sản Phẩm"
-            onClick={() => redirectRouter("/post")}
+            onClick={() => redirectRouter(user ? "/post" : "/login")}
           >
             <Image
               width={40}
@@ -109,10 +118,15 @@ function Header() {
           <Badge count={2} className="hidden md:block">
             <BellOutlined className="text-[22px]" />
           </Badge>
-          <Badge count={totalCart ?? 0} onClick={() => redirectRouter("/cart")}>
+          <Badge
+            count={totalCart ?? 0}
+            onClick={() =>
+              redirectRouter(redirectRouter(user ? "/cart" : "/login"))
+            }
+          >
             <ShoppingCartOutlined className="text-[25px]" />
           </Badge>
-          {user && (
+          {user ? (
             <div className="items-center cursor-pointer hidden md:flex">
               <Tooltip
                 className="space-x-1"
@@ -159,13 +173,21 @@ function Header() {
                 <span>{user.name}</span>
               </Tooltip>
             </div>
+          ) : (
+            <>
+            <div className="flex justify-center items-center hidden md:block">
+              <Button onClick={() => redirectRouter("/login")}>
+                Đăng Nhập
+              </Button>
+            </div>
+            </>
           )}
         </div>
       </div>
       <Drawer
         title={
           <div className="flex items-center justify-end space-x-2">
-            <Avatar src={user?.image}>{user?.name?.[0]}</Avatar>
+            {user && <Avatar src={user?.image}>{user?.name?.[0]}</Avatar>}
             <span>{user?.name}</span>
           </div>
         }
@@ -184,42 +206,59 @@ function Header() {
             onClick={() => redirectRouter("/")}
           />
         </div>
-        <div
-          className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
-          onClick={() => {
-            redirectRouter("/info-me");
-          }}
-        >
-          Thông Tin Của Tôi
-        </div>
-        <Divider className="!my-0" />
-        <div
-          className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
-          onClick={() => {
-            redirectRouter("/order-me");
-          }}
-        >
-          Đơn Hàng Của Tôi
-        </div>
-        <Divider className="!my-0" />
-        <div
-          className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
-          onClick={() => {
-            redirectRouter("/order-me");
-          }}
-        >
-          Đơn Hàng Đã Đăng Bán
-        </div>
-        <Divider className="!my-0" />
-        <div
-          className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
-          onClick={() => {
-            redirectRouter("/login");
-            resetStore();
-          }}
-        >
-          Đăng Xuất
-        </div>
+        {user ? (
+          <>
+            <div
+              className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+              onClick={() => {
+                redirectRouter("/info-me");
+              }}
+            >
+              Thông Tin Của Tôi
+            </div>
+            <Divider className="!my-0" />
+            <div
+              className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+              onClick={() => {
+                redirectRouter("/post");
+              }}
+            >
+              Đăng Bán Sản Phẩm
+            </div>
+            <Divider className="!my-0" />
+            <div
+              className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+              onClick={() => {
+                redirectRouter("/order-me");
+              }}
+            >
+              Đơn Hàng Của Tôi
+            </div>
+            <Divider className="!my-0" />
+            <div
+              className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+              onClick={() => {
+                redirectRouter("/order-me");
+              }}
+            >
+              Đơn Hàng Đã Đăng Bán
+            </div>
+            <Divider className="!my-0" />
+            <div
+              className="text-[#333] px-5 py-2 cursor-pointer font-semibold"
+              onClick={() => {
+                redirectRouter("/login");
+                resetStore();
+              }}
+            >
+              Đăng Xuất
+            </div>
+          </>
+        ) : (
+          <div className="flex justify-center mt-5">
+            <Button onClick={() => redirectRouter("/login")}>Đăng Nhập</Button>
+          </div>
+        )}
       </Drawer>
     </div>
   );

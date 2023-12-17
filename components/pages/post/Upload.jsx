@@ -1,5 +1,6 @@
 import { CreateContext } from "@/context/ContextProviderGlobal";
 import { upploadImage } from "@/service/upload";
+import { getImage } from "@/utils/image.util";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Image } from "antd";
 import React, { Fragment, useContext, useEffect, useState } from "react";
@@ -16,8 +17,8 @@ function Upload({ value, onChange, styleBody }) {
       formData.append("image", e.target.files[0]);
       const response = await upploadImage(formData);
       const url = `${response.path_image}/${response.image}`
-      setImg(url);
-      onChange?.(url);
+      setImg(getImage(url));
+      onChange?.(getImage(url));
     } catch (error) {
       errorNoti("Vui lòng kiểm tra lại file của bạn");
     } finally {
@@ -29,7 +30,7 @@ function Upload({ value, onChange, styleBody }) {
     if (value) setImg(value);
   }, [value]);
   return (
-    <div className="w-full md:w-[500px] flex justify-start relative" style={styleBody}>
+    <div className="w-full md:w-[500px] flex justify-center sm:justify-start relative" style={styleBody}>
       <label htmlFor="img">
         <div className=" border-solid border-[1px] rounded-[10px] flex flex-col items-center justify-center w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] cursor-pointer">
           {!img ? (

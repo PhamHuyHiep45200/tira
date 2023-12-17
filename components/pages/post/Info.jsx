@@ -61,7 +61,7 @@ function Info() {
           <Form.Item name="category" rules={[{required: true, message: 'Trường này bắt buộc'}]}>
             <Select
               size="large"
-              className="rounded-[20px] min-w-[350px]"
+              className="rounded-[20px] min-w-[250px]"
               options={category}
             ></Select>
           </Form.Item>

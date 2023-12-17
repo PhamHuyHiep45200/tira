@@ -37,6 +37,9 @@ function HeaderCategory({ open, closeMenu }) {
         padding: `${open ? "40px" : "0px"}`,
       }}
     >
+      <div className="text-center mb-5">
+        <Image src='/image/logo-cate.png' className="!w-[150px] !h-[40px] sm:!w-[300px] sm:!h-[60px]" alt='' preview={false} />
+      </div>
       <Row gutter={[30, 0]}>
         <Col span={0} xl={6}>
           <Image

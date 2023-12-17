@@ -4,18 +4,15 @@ import React, { useContext } from "react";
 import Info from "@/components/pages/post/Info";
 import { postProduct } from "@/service/product";
 import { CreateContext } from "@/context/ContextProviderGlobal";
+import UploadImage from "@/components/pages/post/UploadImage";
 
 function Post() {
   const { successNoti } = useContext(CreateContext);
   const [form] = Form.useForm();
   const postProducct = async (values) => {
     try {
-      const dataPost = {
-        ...values,
-        image: [values.image],
-      };
-      await postProduct(dataPost);
-      form.resetFields()
+      await postProduct(values);
+      form.resetFields();
       successNoti("Đăng bài thành công! Vui lòng đợi Admin Duyệt Bài.");
     } catch (error) {
       console.log(error);
@@ -29,12 +26,20 @@ function Post() {
             ĐĂNG BÁN SẢN PHẨM
           </h3>
           <div className="flex flex-col md:flex-row items-center xl:items-start">
-            <Form.Item
-              name="image"
-              rules={[{ required: true, message: "Trường này bắt buộc" }]}
-            >
-              <Upload />
-            </Form.Item>
+            <div>
+              <Form.Item
+                name="image_master"
+                rules={[{ required: true, message: "Trường này bắt buộc" }]}
+              >
+                <Upload />
+              </Form.Item>
+              <Form.Item
+                name="image"
+                rules={[{ required: true, message: "Trường này bắt buộc" }]}
+              >
+                <UploadImage />
+              </Form.Item>
+            </div>
             <Info />
           </div>
         </div>

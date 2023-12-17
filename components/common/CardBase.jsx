@@ -9,29 +9,33 @@ import { useRouter } from "next/router";
 import React, { useContext, useMemo } from "react";
 
 function CardBase({ hoverAction, width, height, infoProduct }) {
-  const { getMe } = useContext(CreateContext);
-  const [widthScreen , heightScreen] = useWindowSize()
+  const { getMe, user, errorNoti } = useContext(CreateContext);
+  const [widthScreen, heightScreen] = useWindowSize();
   const router = useRouter();
   const addToCart = async () => {
-    try {
-      await addCart({
-        product: infoProduct.id,
-        quantity: 1,
-      });
-      getMe();
-    } catch (error) {
-      console.log(error);
+    if (user) {
+      try {
+        await addCart({
+          product: infoProduct.id,
+          quantity: 1,
+        });
+        getMe();
+      } catch (error) {
+        errorNoti(error.message ?? "");
+      }
+    } else {
+      router.push("/login");
     }
   };
   const detailProduct = () => {
     router.push(`/detail/${infoProduct.id}`);
   };
 
-  const heightCard = useMemo(()=>{
-    if(widthScreen < REPONSIVE_SCREEN.MD) return '250px'
-    if(height) return height
-    return '350px'
-  }, [widthScreen, height])
+  const heightCard = useMemo(() => {
+    if (widthScreen < REPONSIVE_SCREEN.MD) return "240px";
+    if (height) return height;
+    return "380px";
+  }, [widthScreen, height]);
   return (
     <Card
       title={false}
@@ -49,29 +53,41 @@ function CardBase({ hoverAction, width, height, infoProduct }) {
     >
       <div className="w-full h-[150px] md:h-[200px] xl:h-[260px] overflow-hidden">
         <img
-          src={infoProduct ? JSON.parse(infoProduct?.image)[0] : ""}
+          src={
+            infoProduct && infoProduct?.image
+              ? infoProduct?.image_master
+              : ""
+          }
           alt=""
+          onClick={detailProduct}
           className={`w-full h-full ${hoverAction ? "image-card" : ""}`}
         />
       </div>
       <div className="px-5">
-        <div className="text-[16px] lg:text-[20px] font-semibold h-[40px] lg:h-[50px] leading-[1.3] truncate-2 mt-2">
+        <div
+          className="text-[16px] lg:text-[20px] font-semibold h-[40px] lg:h-[50px] leading-[1.3] truncate-2 mt-2"
+          onClick={detailProduct}
+        >
           {infoProduct?.name ?? ""}
         </div>
         <div className="flex justify-between items-end mt-0 md:mt-[5px]">
           {/* <span className="text-[#999]">Số lượng: <span className="text-[#ff7b0f]">18</span></span> */}
-          <span className="text-[red] text-[14px] lg:text-[22px] font-bold">
+          <span className="text-[red] text-[14px] lg:text-[22px] font-bold" onClick={detailProduct}>
             {formatMoney(infoProduct?.price ?? 0)} đ
           </span>
-          <Button size={widthScreen < REPONSIVE_SCREEN.MD ? 'small' : ''} className="flex items-center space-x-1" onClick={addToCart}>
+          <Button
+            size={widthScreen < REPONSIVE_SCREEN.MD ? "small" : ""}
+            className="flex items-center space-x-1"
+            onClick={addToCart}
+          >
             + <ShoppingCartOutlined />
           </Button>
         </div>
-        <div className="flex">
+        {/* <div className="flex">
           <span className="underline text-primary" onClick={detailProduct}>
             Xem Chi Tiết
           </span>
-        </div>
+        </div> */}
       </div>
     </Card>
   );
