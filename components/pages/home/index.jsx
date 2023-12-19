@@ -30,7 +30,7 @@ function HomePages() {
 
   const getProductTop = async () => {
     try {
-      const response = await getProductTopOrder();
+      const response = await getProductTopOrder({limit: 6});
       setProductTop(response);
     } catch (error) {
       console.log(error);
@@ -92,11 +92,11 @@ function HomePages() {
           </div>
           <ProductNew data={productTop} />
         </div>
-        {/* {!!category.length && (
+        {!!category.length && (
           <div className="mt-[150px]">
             <Category data={category} />
           </div>
-        )} */}
+        )}
 
         <div className="my-[50px]">
         <div className="text-[20px] xl:text-[25px] underline mb-2 font-bold">

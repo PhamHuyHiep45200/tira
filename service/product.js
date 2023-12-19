@@ -20,8 +20,9 @@ export async function getProductById(id) {
   });
 }
 
-export async function getProductTopOrder() {
+export async function getProductTopOrder(params) {
   return request(`/product/get-top-order`, {
     method: "GET",
+    params
   });
 }

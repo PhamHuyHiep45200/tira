@@ -1,14 +1,14 @@
 import CardBase from "@/components/common/CardBase";
 import { REPONSIVE_SCREEN } from "@/enum/reponsive";
 import useWindowSize from "@/hooks/useResize";
-import { Image } from "antd";
+import { Col, Image, Row } from "antd";
 import React, { useMemo } from "react";
 import Slider from "react-slick";
 
-function ProductNew({data}) {
-  const [width, height] = useWindowSize()
+function ProductNew({ data }) {
+  const [width, height] = useWindowSize();
 
-  const settings = useMemo(()=>{
+  const settings = useMemo(() => {
     return {
       dots: true,
       infinite: true,
@@ -22,20 +22,34 @@ function ProductNew({data}) {
       centerMode: true,
       swipeToSlide: true,
       dots: false,
-      pauseOnHover: false
-    }
-  },[width]);
+      pauseOnHover: false,
+    };
+  }, [width]);
 
   return (
-    <Slider {...settings}>
-      {data.length && data.map((e, i) => {
+    // <Slider {...settings}>
+    //   {data.length && data.map((e, i) => {
+    //     return (
+    //       <div className="px-[10px] md:px-[30px]" key={e}>
+    //         <CardBase infoProduct={e} />
+    //       </div>
+    //     );
+    //   })}
+    // </Slider>
+    <Row
+      gutter={[
+        width < REPONSIVE_SCREEN.MD ? 10 : 20,
+        width < REPONSIVE_SCREEN.MD ? 5 : 30,
+      ]}
+    >
+      {data.map((e) => {
         return (
-          <div className="px-[10px] md:px-[30px]" key={e}>
-            <CardBase infoProduct={e} />
-          </div>
+          <Col span={12} sm={12} md={8} lg={6} xl={6} key={e}>
+            <CardBase hoverAction infoProduct={e} />
+          </Col>
         );
       })}
-    </Slider>
+    </Row>
   );
 }
 
