@@ -11,22 +11,12 @@ import { Fragment } from "react";
 
 function Cart() {
   const [widthScreen, height] = useWindowSize();
-  const { getMe } = useContext(CreateContext);
+  const { getMe, startLoading, stopLoading } = useContext(CreateContext);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [carts, setCarts] = useState([]);
   const [cartsObj, setCartsObj] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const router = useRouter();
-
-  const start = () => {
-    setLoading(true);
-    // ajax request after empty completing
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoading(false);
-    }, 1000);
-  };
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -93,7 +83,7 @@ function Cart() {
         title: "Tổng Tiền",
         render: (_, record) => (
           <span className="text-[red] text-[12px] md:text-[14px] whitespace-nowrap font-semibold">
-            {formatMoney(record?.product?.price ?? 0 * record.quantity)} đ
+            {formatMoney((record?.product?.price ?? 0) * record.quantity)} đ
           </span>
         ),
       },
@@ -111,7 +101,7 @@ function Cart() {
     });
   };
   const getAllCart = async () => {
-    setLoading(true);
+    startLoading();
     try {
       const { cart } = await getCart();
       setCarts(
@@ -129,7 +119,7 @@ function Cart() {
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   };
 
@@ -158,25 +148,16 @@ function Cart() {
             <img src="/image/cart.gif" />
           </div>
         </div>
-        {loading ? (
-          <Fragment>
-            <Skeleton active />
-            <Skeleton active className="mt-5" />
-          </Fragment>
-        ) : (
-          <Fragment>
-            <Button danger className="my-2 float-right">
-              Xoá Sản Phẩm
-            </Button>
-            <Table
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={carts}
-              pagination={false}
-              scroll={{ x: 400 }}
-            />
-          </Fragment>
-        )}
+        <Button danger className="my-2 float-right">
+          Xoá Sản Phẩm
+        </Button>
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={carts}
+          pagination={false}
+          scroll={{ x: 400 }}
+        />
         <div className="sticky bottom-0 h-[140px] bg-white border-t-[2px] flex flex-col items-end justify-center">
           <span>
             Tổng Tiền:{" "}

@@ -66,7 +66,9 @@ function DetailProduct() {
                   images.map((e, i) => {
                     return (
                       <div className="lg:px-[30px]" key={e}>
-                        <img
+                        <Image
+                          height={250}
+                          width={'100%'}
                           className=" object-cover h-[250px] w-full"
                           alt=""
                           src={e}
