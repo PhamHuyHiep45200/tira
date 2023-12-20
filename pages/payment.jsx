@@ -4,14 +4,24 @@ import { getCart } from "@/service/cart";
 import { checkPayment, createPayment } from "@/service/payment";
 import { formatMoney } from "@/utils/common.util";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { Button, Form, Image, Input, InputNumber, Radio, Table, Tag } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  InputNumber,
+  Radio,
+  Table,
+  Tag,
+} from "antd";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 
-const {TextArea} = Input
+const { TextArea } = Input;
 
 const exchangeRate = 0.000043;
 function Payment() {
+  const [form] = Form.useForm()
   const { getMe, errorNoti } = useContext(CreateContext);
   const [paymentType, setPaymentType] = useState(2);
   const [loading, setLoading] = useState(false);
@@ -19,17 +29,17 @@ function Payment() {
   const { product } = router.query;
   const [products, setProducts] = useState([]);
   const [required, setRequired] = useState(true);
-  const [infoPayment, setInfoPayment] = useState({})
+  const [infoPayment, setInfoPayment] = useState({});
 
-  const onValuesChange = (e, a) => {
-    setInfoPayment({
-      ...infoPayment,
-      ...e
-    })
-    if (Object.values(a).every((e) => e)) {
-      setRequired(false);
-    } else {
-      setRequired(true);
+  const onValuesChange = async (e, a) => {
+    try {
+      await form.validateFields()
+    } catch (error) {
+      if (!error.errorFields.length) {
+        setRequired(false);
+      } else {
+        setRequired(true);
+      }
     }
   };
 
@@ -114,19 +124,19 @@ function Payment() {
     }
   };
 
-  const paymentOrder = async ()=>{
+  const paymentOrder = async () => {
     try {
-      const {order} = await createPayment({
+      const { order } = await createPayment({
         cart_detail: product,
         address: infoPayment.address,
         phone: infoPayment.phone,
         kind_of_payment: paymentType,
       });
-      await getMe()
+      await getMe();
     } catch (error) {
-      Object.values(error.message).forEach((e)=>errorNoti(e?.[0]))
+      Object.values(error.message).forEach((e) => errorNoti(e?.[0]));
     }
-  } 
+  };
 
   useEffect(() => {
     if (product) getAllCart();
@@ -148,7 +158,7 @@ function Payment() {
         <div className="bg-[#ebebeb] w-full py-2 md:py-4 flex justify-center rounded-md italic font-semibold text-[16px] md:text-[20px] text-[red] my-5">
           Tổng Tiền: {formatMoney(totalPrice)} đ
         </div>
-        <Form onValuesChange={onValuesChange} className="w-full">
+        <Form onValuesChange={onValuesChange} className="w-full" form={form}>
           <div className="font-semibold">Địa Chỉ</div>
           <Form.Item
             name="address"
@@ -159,39 +169,51 @@ function Payment() {
           <div className="font-semibold">Số Điện Thoại</div>
           <Form.Item
             name="phone"
-            rules={[{ required: true, message: "Trường này bắt buộc" }]}
+            rules={[
+              { required: true, message: "Trường này bắt buộc" },
+              { min: 10, message: "Số điện thoại phải chứa ít nhất 10 số" },
+              { max: 11, message: "Số điện thoại chứa nhiều nhất 11 số" },
+            ]}
           >
             <Input size="large" className="w-full" />
           </Form.Item>
         </Form>
-        {required && <span className="text-[12px] self-start text-[red] italic">
-          *Vui lòng điền đầy đủ thông tin trước khi thanh toán
-        </span>}
+        {required && (
+          <span className="text-[12px] self-start text-[red] italic">
+            *Vui lòng điền đầy đủ thông tin trước khi thanh toán
+          </span>
+        )}
         <div className="bg-[#ebebeb] w-full py-2 md:py-4 flex justify-center rounded-md italic font-semibold text-[16px] md:text-[20px] text-[red] mb-5 mt-2">
           Phương Thức Thanh Toán
         </div>
-        <div 
-        className="px-2"
+        <div
+          className="px-2"
           style={{
             opacity: required ? "0.5" : "1",
             pointerEvents: required ? "none" : "unset",
           }}
         >
           <div className="flex justify-center">
-          <Radio.Group value={paymentType} onChange={selectPaymentType}>
-            <Radio value={1} className="mt-2 sm:mt-0">
-              <Tag color="blue" className="py-1 md:py-2 px-2 md:px-4 text-[14px] md:text-[18px]">
-                Thanh Toán Khi Nhận Hàng
-              </Tag>
-            </Radio>
-            <Radio value={2} className="mt-2 sm:mt-0">
-              <Tag color="green" className="py-1 md:py-2 px-2 md:px-4 text-[14px] md:text-[18px]">
-                Thanh Toán Online
-              </Tag>
-            </Radio>
-          </Radio.Group>
+            <Radio.Group value={paymentType} onChange={selectPaymentType}>
+              <Radio value={1} className="mt-2 sm:mt-0">
+                <Tag
+                  color="blue"
+                  className="py-1 md:py-2 px-2 md:px-4 text-[14px] md:text-[18px]"
+                >
+                  Thanh Toán Khi Nhận Hàng
+                </Tag>
+              </Radio>
+              <Radio value={2} className="mt-2 sm:mt-0">
+                <Tag
+                  color="green"
+                  className="py-1 md:py-2 px-2 md:px-4 text-[14px] md:text-[18px]"
+                >
+                  Thanh Toán Online
+                </Tag>
+              </Radio>
+            </Radio.Group>
           </div>
-          <div className="w-full md:min-w-[500px] md:max-w-[500px] mt-5 flex justify-center md:block" >
+          <div className="w-full md:min-w-[500px] md:max-w-[500px] mt-5 flex justify-center md:block">
             {paymentType === 1 ? (
               <Button
                 size="large"
