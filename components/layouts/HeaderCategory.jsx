@@ -61,7 +61,7 @@ function HeaderCategory({ open, closeMenu }) {
                     xl={6}
                     key={e.id}
                     className=" hover:text-primary flex items-center space-x-2 hover:font-semibold text-[18px] cursor-pointer"
-                    onMouseEnter={() => setImage(getImage(e.image))}
+                    onMouseEnter={() => setImage(e.image)}
                     onMouseLeave={() => setImage("")}
                     onClick={() => searchCategory(e.id)}
                   >
