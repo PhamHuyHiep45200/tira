@@ -67,7 +67,7 @@ function DetailProduct() {
                     return (
                       <div className="lg:px-[30px]" key={e}>
                         <Image
-                          height={250}
+                          height={350}
                           width={'100%'}
                           className=" object-cover h-[250px] w-full"
                           alt=""

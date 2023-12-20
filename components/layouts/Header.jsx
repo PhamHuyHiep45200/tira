@@ -78,13 +78,29 @@ function Header() {
         <div className="items-center md:hidden">
           <MenuUnfoldOutlined className="text-[25px]" onClick={onOpen} />
         </div>
+        <div className="flex items-center space-x-4">
+          <span
+            className="hidden md:block text-[17px] cursor-pointer"
+            onClick={() => redirectRouter("/login")}
+          >
+            Trang Chủ
+          </span>
+          <span
+            className={`text-[17px] cursor-pointer mr-2 ${
+              openCategory ? "text-primary" : ""
+            }`}
+            onClick={() => setOpenCategory(!openCategory)}
+          >
+            Menu
+          </span>
+        </div>
         <Form>
           <Form.Item noStyle name="name">
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               size="large"
-              className="rounded-[20px] max-w-[300px] min-w-[300px] sm:max-w-[500px] sm:min-w-[450px] pl-[15px] pr-[20px]"
+              className="rounded-[20px] max-w-[230px] min-w-[230px] sm:max-w-[500px] sm:min-w-[450px] pl-[15px] pr-[20px]"
               placeholder="Tìm kiếm ..."
               suffix={
                 <SearchOutlined
@@ -96,12 +112,6 @@ function Header() {
           </Form.Item>
         </Form>
         <div className="flex items-center space-x-3 md:space-x-6">
-          <Tooltip
-            title="Thể Loại"
-            onClick={() => setOpenCategory(!openCategory)}
-          >
-            <AppstoreAddOutlined className="text-[20px] sm:text-[30px]" />
-          </Tooltip>
           <Tooltip
             className="hidden md:block"
             title="Đăng Sản Phẩm"
@@ -120,9 +130,7 @@ function Header() {
           </Badge>
           <Badge
             count={totalCart ?? 0}
-            onClick={() =>
-              redirectRouter(user ? "/cart" : "/login")
-            }
+            onClick={() => redirectRouter(user ? "/cart" : "/login")}
           >
             <ShoppingCartOutlined className="text-[25px]" />
           </Badge>
@@ -175,11 +183,11 @@ function Header() {
             </div>
           ) : (
             <>
-            <div className="flex justify-center items-center hidden md:block">
-              <Button onClick={() => redirectRouter("/login")}>
-                Đăng Nhập
-              </Button>
-            </div>
+              <div className="flex justify-center items-center hidden md:block">
+                <Button onClick={() => redirectRouter("/login")}>
+                  Đăng Nhập
+                </Button>
+              </div>
             </>
           )}
         </div>
