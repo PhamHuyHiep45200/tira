@@ -37,6 +37,10 @@ function Payment() {
     } catch (error) {
       if (!error.errorFields.length) {
         setRequired(false);
+        setInfoPayment({
+          ...infoPayment,
+          ...a
+        })
       } else {
         setRequired(true);
       }
@@ -126,13 +130,14 @@ function Payment() {
 
   const paymentOrder = async () => {
     try {
-      const { order } = await createPayment({
+      await createPayment({
         cart_detail: product,
         address: infoPayment.address,
         phone: infoPayment.phone,
         kind_of_payment: paymentType,
       });
       await getMe();
+      router.push("/order-me");
     } catch (error) {
       Object.values(error.message).forEach((e) => errorNoti(e?.[0]));
     }
@@ -232,9 +237,8 @@ function Payment() {
                   createOrder={async (data, actions, err) => {
                     try {
                       const { order } = await createPayment({
+                        ...form.getFieldsValue(),
                         cart_detail: product,
-                        address: infoPayment.address,
-                        phone: infoPayment.phone,
                         kind_of_payment: paymentType,
                       });
                       await getMe();

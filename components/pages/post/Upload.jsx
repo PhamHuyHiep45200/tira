@@ -53,7 +53,7 @@ function Upload({ value, onChange, styleBody }) {
             <Image
               src={img}
               alt=""
-              className="w-[300px] h-[300px] sm:w-full sm:h-full rounded-[8px]"
+              className="!w-[300px] !h-[300px] sm:w-full sm:h-full rounded-[8px]"
               preview={false}
             />
           )}

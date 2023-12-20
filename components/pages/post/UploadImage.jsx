@@ -7,7 +7,10 @@ import { CreateContext } from "@/context/ContextProviderGlobal";
 function UploadImage({ value, onChange }) {
   const { errorNoti } = useContext(CreateContext);
   const [fileList, setFileList] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const onChangeFile = async (e) => {
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("folder", "product");
@@ -26,6 +29,8 @@ function UploadImage({ value, onChange }) {
       onChange?.([...fileList.map((e) => e.url), getImage(url)]);
     } catch (error) {
       errorNoti("Vui lòng kiểm tra lại file của bạn");
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -35,7 +40,7 @@ function UploadImage({ value, onChange }) {
         fileList={fileList}
         onChange={onChangeFile}
       >
-        {fileList.length < 4 && "+ Upload"}
+        {fileList.length < 4 && (loading ? "" : "+ Upload")}
       </Upload>
     </div>
   );
