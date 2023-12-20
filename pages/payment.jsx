@@ -37,6 +37,10 @@ function Payment() {
     } catch (error) {
       if (!error.errorFields.length) {
         setRequired(false);
+        setInfoPayment({
+          ...infoPayment,
+          ...e
+        })
       } else {
         setRequired(true);
       }
