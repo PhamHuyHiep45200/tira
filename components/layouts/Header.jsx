@@ -1,6 +1,7 @@
 import { CreateContext } from "@/context/ContextProviderGlobal";
 import {
   AppstoreAddOutlined,
+  AppstoreOutlined,
   BellOutlined,
   MenuUnfoldOutlined,
   SearchOutlined,
@@ -65,6 +66,7 @@ function Header() {
     >
       <HeaderCategory open={openCategory} closeMenu={closeCategory} />
       <div className="w-[1280px] flex justify-between items-center">
+        <div className="flex items-center">
         <div className="hidden md:block">
           <Image
             className="cursor-poniter"
@@ -78,21 +80,16 @@ function Header() {
         <div className="items-center md:hidden">
           <MenuUnfoldOutlined className="text-[25px]" onClick={onOpen} />
         </div>
-        <div className="flex items-center space-x-4">
-          <span
-            className="hidden md:block text-[17px] cursor-pointer"
-            onClick={() => redirectRouter("/login")}
-          >
-            Trang Chủ
-          </span>
+        <div className="flex items-center space-x-4 ml-5">
           <span
             className={`text-[17px] cursor-pointer mr-2 ${
               openCategory ? "text-primary" : ""
             }`}
             onClick={() => setOpenCategory(!openCategory)}
           >
-            Menu
+            <AppstoreOutlined className="text-[28px]" />
           </span>
+        </div>
         </div>
         <Form>
           <Form.Item noStyle name="name">
