@@ -1,20 +1,41 @@
 import DesctiptionBase from "@/components/pages/post/Desctiption";
-import { getAllCategory } from "@/service/category";
+import { getAllCategory, getAllCollection } from "@/service/category";
 import { Button, Col, Form, Input, InputNumber, Row, Select } from "antd";
 import { Editor } from "primereact/editor";
 import React, { useEffect, useState } from "react";
 
 function Info() {
   const [loading, setLoading] = useState(false)
-  const [category, setCategory] = useState(false)
+  const [category, setCategory] = useState([])
+  const [collection, setCollection] = useState([])
+
   useEffect(() => {
-    getAll();
+    getAllData();
   }, []);
-  const getAll = async () => {
+
+  const getAllData = async () => {
+    await Promise.all([getAllDataCategory(), getAllDataCollection()])
+  }
+  const getAllDataCategory = async () => {
     setLoading(true);
     try {
       const { categories } = await getAllCategory();
       setCategory(categories.data.map((category) => ({
+        label: category.name,
+        value: category.id
+      })));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAllDataCollection = async () => {
+    setLoading(true);
+    try {
+      const { collections } = await getAllCollection();
+      setCollection(collections.data.map((category) => ({
         label: category.name,
         value: category.id
       })));
@@ -63,6 +84,18 @@ function Info() {
               size="large"
               className="rounded-[20px] min-w-[250px]"
               options={category}
+            ></Select>
+          </Form.Item>
+        </Col>
+        <Col span={6} className="flex items-center pl-5 font-semibold">
+          Bộ Sưu Tập
+        </Col>
+        <Col span={18}>
+          <Form.Item name="collection" rules={[{required: true, message: 'Trường này bắt buộc'}]}>
+            <Select
+              size="large"
+              className="rounded-[20px] min-w-[250px]"
+              options={collection}
             ></Select>
           </Form.Item>
         </Col>

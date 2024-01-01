@@ -5,3 +5,9 @@ export async function getAllCategory() {
     method: "GET"
   });
 }
+
+export async function getAllCollection() {
+  return request(`/collection/all`, {
+    method: "GET"
+  });
+}

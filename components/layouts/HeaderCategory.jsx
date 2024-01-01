@@ -25,7 +25,7 @@ function HeaderCategory({ open, closeMenu }) {
     {
       key: "3",
       label: "Bộ Sưu Tập",
-      children: <Collection />,
+      children: <Collection closeMenu={closeMenu}/>,
     },
   ];
   const changeTab = (e) => {

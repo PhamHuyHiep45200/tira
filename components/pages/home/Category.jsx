@@ -12,7 +12,7 @@ function Category({data}) {
     if(width < REPONSIVE_SCREEN.SM) {
       return 3
     }
-    return data.length < 5 ? data.length : 5
+    return data.length < 3 ? data.length : 3
   }
 
   const changeSwiper = (e) => {
@@ -38,8 +38,8 @@ function Category({data}) {
 
   return (
     <div>
-      <div className="text-center">
-        <Image src='/image/logo-cate.png' alt='' preview={false} />
+      <div className="text-center font-bold underline text-[30px]">
+        Thể Loại
       </div>
       <Slider {...settings} afterChange={changeSwiper}>
         {data.map((category, i) => {

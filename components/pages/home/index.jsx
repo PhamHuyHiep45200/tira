@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Banner from "./Banner";
 import Category from "./Category";
-import { Button, Col, Image, Row } from "antd";
+import { Button, Col, Image, Pagination, Row } from "antd";
 import ProductNew from "./Product/ProductNew";
 import CardBase from "@/components/common/CardBase";
 import { getAllCategory } from "@/service/category";
@@ -30,7 +30,7 @@ function HomePages() {
 
   const getProductTop = async () => {
     try {
-      const response = await getProductTopOrder({limit: 6});
+      const response = await getProductTopOrder({ limit: 4, page: 1 });
       setProductTop(response);
     } catch (error) {
       console.log(error);
@@ -55,12 +55,9 @@ function HomePages() {
       });
       setPagination({
         ...pagination,
-        total: products.total
-      })
-      setProduct([
-        ...product,
-        ...products.data
-      ]);
+        total: products.total,
+      });
+      setProduct(products.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -99,7 +96,7 @@ function HomePages() {
         )}
 
         <div className="my-[50px]">
-        <div className="text-[20px] xl:text-[25px] underline mb-2 font-bold">
+          <div className="text-[20px] xl:text-[25px] underline mb-2 font-bold">
             Thể Loại Nổi Bật
           </div>
           <Row gutter={[30, 30]}>
@@ -130,18 +127,14 @@ function HomePages() {
               );
             })}
           </Row>
-          {pagination.total > product.length && (
-            <div className="text-center mt-5">
-              <Button
-                size="large"
-                onClick={() =>
-                  setPagination({ ...pagination, page: pagination.page + 1 })
-                }
-              >
-                Xem Thêm
-              </Button>
-            </div>
-          )}
+          <div className="text-center mt-5">
+            <Pagination
+              current={pagination.page}
+              total={pagination.total}
+              pageSize={pagination.limit}
+              onChange={(e) => setPagination({ ...pagination, page: e })}
+            />
+          </div>
         </div>
       </div>
     </div>

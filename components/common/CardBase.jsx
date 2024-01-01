@@ -28,7 +28,9 @@ function CardBase({ hoverAction, width, height, infoProduct }) {
     }
   };
   const detailProduct = () => {
-    router.push(`/detail/${infoProduct.id}`);
+    if(infoProduct.quantity > 0) {
+      router.push(`/detail/${infoProduct.id}`);
+    }
   };
 
   const heightCard = useMemo(() => {
@@ -46,17 +48,21 @@ function CardBase({ hoverAction, width, height, infoProduct }) {
         borderRadius: "5px",
         overflow: "hidden",
         cursor: "pointer",
+        position: "relative",
       }}
       bordered={false}
       className={hoverAction ? "container-card" : ""}
       style={{ boxShadow: "0 0 5px 3px #eaeaea" }}
     >
+      {infoProduct.quantity === 0 && (
+        <div className=" absolute inset-0 bg-black bg-opacity-[0.4] z-[1] flex items-center justify-center">
+          <span className="font-bold text-[20px] text-[red]">Hết Hàng</span>
+        </div>
+      )}
       <div className="w-full h-[150px] md:h-[200px] xl:h-[260px] overflow-hidden">
         <img
           src={
-            infoProduct && infoProduct?.image
-              ? infoProduct?.image_master
-              : ""
+            infoProduct && infoProduct?.image ? infoProduct?.image_master : ""
           }
           alt=""
           onClick={detailProduct}
@@ -72,7 +78,10 @@ function CardBase({ hoverAction, width, height, infoProduct }) {
         </div>
         <div className="flex justify-between items-end mt-0 md:mt-[5px]">
           {/* <span className="text-[#999]">Số lượng: <span className="text-[#ff7b0f]">18</span></span> */}
-          <span className="text-[red] text-[14px] lg:text-[22px] font-bold" onClick={detailProduct}>
+          <span
+            className="text-[red] text-[14px] lg:text-[22px] font-bold"
+            onClick={detailProduct}
+          >
             {formatMoney(infoProduct?.price ?? 0)} đ
           </span>
           <Button

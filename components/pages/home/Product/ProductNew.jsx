@@ -1,7 +1,7 @@
 import CardBase from "@/components/common/CardBase";
 import { REPONSIVE_SCREEN } from "@/enum/reponsive";
 import useWindowSize from "@/hooks/useResize";
-import { Col, Image, Row } from "antd";
+import { Col, Image, Pagination, Row } from "antd";
 import React, { useMemo } from "react";
 import Slider from "react-slick";
 
