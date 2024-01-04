@@ -19,3 +19,12 @@ export async function updateCartById(id, data) {
     data,
   });
 }
+
+export async function deleteCart(ids) {
+  return request(`/cart/delete`, {
+    method: "POST",
+    data: {
+      ids
+    }
+  });
+}

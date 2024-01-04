@@ -2,7 +2,7 @@ import QuantityProduct from "@/components/pages/cart/QuantityProduct";
 import { CreateContext } from "@/context/ContextProviderGlobal";
 import { REPONSIVE_SCREEN } from "@/enum/reponsive";
 import useWindowSize from "@/hooks/useResize";
-import { getCart, updateCartById } from "@/service/cart";
+import { deleteCart, getCart, updateCartById } from "@/service/cart";
 import { formatMoney } from "@/utils/common.util";
 import { Button, Image, Skeleton, Table } from "antd";
 import { useRouter } from "next/router";
@@ -11,11 +11,12 @@ import { Fragment } from "react";
 
 function Cart() {
   const [widthScreen, height] = useWindowSize();
-  const { getMe, startLoading, stopLoading } = useContext(CreateContext);
+  const { getMe, startLoading, stopLoading, errorNoti } = useContext(CreateContext);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [carts, setCarts] = useState([]);
   const [cartsObj, setCartsObj] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [resetCart, setResetCard] = useState(Math.random());
   const router = useRouter();
 
   const onSelectChange = (newSelectedRowKeys) => {
@@ -73,6 +74,7 @@ function Cart() {
         align: "center",
         render: (_, record) => (
           <QuantityProduct
+            refresh={resetCart}
             value={record?.quantity}
             onChange={(qty) => updateCart(qty, record.id)}
           />
@@ -90,7 +92,7 @@ function Cart() {
     ];
     if (widthScreen < REPONSIVE_SCREEN.MD) list.splice(1, 1);
     return list;
-  }, [totalPrice, carts]);
+  }, [totalPrice, carts, resetCart]);
 
   const paymentCart = () => {
     router.push({
@@ -120,6 +122,7 @@ function Cart() {
       console.log(error);
     } finally {
       stopLoading();
+      setResetCard(Math.random())
     }
   };
 
@@ -130,9 +133,20 @@ function Cart() {
       });
     } catch (error) {
       console.log(error);
+      errorNoti('Có lỗi xảy ra!')
     } finally {
       getAllCart();
       getMe();
+    }
+  };
+
+  const deleteCartData = async () => {
+    try {
+      await deleteCart(selectedRowKeys);
+      getAllCart();
+      getMe();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -148,7 +162,7 @@ function Cart() {
             <img src="/image/cart.gif" />
           </div>
         </div>
-        <Button danger className="my-2 float-right">
+        <Button danger className="my-2 float-right" onClick={deleteCartData}>
           Xoá Sản Phẩm
         </Button>
         <Table
